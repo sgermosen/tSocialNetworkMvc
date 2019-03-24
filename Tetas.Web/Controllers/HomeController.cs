@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Tetas.Web.Controllers
 {
@@ -7,15 +7,16 @@ namespace Tetas.Web.Controllers
     using Repositories.Contracts;
     using System.Diagnostics;
     using System.Linq;
-    using System.Threading.Tasks;
 
     public class HomeController : Controller
     {
         private readonly IPost _postRepository;
+        private readonly IGroup _groupRepository;
 
-        public HomeController(IPost postRepository)
+        public HomeController(IPost postRepository,IGroup groupRepository)
         {
             _postRepository = postRepository;
+            _groupRepository = groupRepository;
         }
 
         public IActionResult Index(string message)
@@ -46,6 +47,15 @@ namespace Tetas.Web.Controllers
             //return Json(new { Table = result }, JsonRequestBehavior.AllowGet);
             //ViewBag.Email = User.FindFirst(ClaimTypes.Email).Value;
             return PartialView("_NewsPartial", model);
+        }
+
+        public ActionResult GroupsFilter()
+        {
+            var model =   _groupRepository.GetGroups("");
+
+            model = model.OrderByDescending(p => p.CreationDate).Take(10);
+
+            return PartialView("_GroupsPartial",  model);
         }
 
         //[HttpPost]

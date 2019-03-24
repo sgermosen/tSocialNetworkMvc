@@ -18,6 +18,7 @@ namespace Tetas.Repositories.Implementations
         public IQueryable<Group> GetGroupWithPostsAndComments(string userid,long groupid)
         {
             var groups = _context.Groups.Where(p=>p.Id==groupid)
+                .Include(p => p.Privacy).Include(t => t.Type)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpc=>gpc.GroupPostComments).ThenInclude(gpcu=>gpcu.Owner)
                 .Include(gp=>gp.GroupPosts).ThenInclude(gpu=>gpu.Owner)
                 .Include(gu => gu.Owner);
@@ -32,19 +33,32 @@ namespace Tetas.Repositories.Implementations
 
         public IQueryable<Group> GetGroupWithPosts(string userid)
         {
-            var groups = _context.Groups
+            var groups = _context.Groups.Include(p => p.Privacy).Include(t => t.Type)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpu => gpu.Owner)
-                .Include(gu => gu.Owner);
+                .Include(gu => gu.Owner).Where(p => p.Deleted == false);
 
             if (!string.IsNullOrEmpty(userid))
             {
-                groups.Where(gu => gu.Owner.Id == userid);
+                groups = groups.Where(gu => gu.Owner.Id == userid);
             }
 
             return groups.AsNoTracking();
         }
 
+       public IQueryable<Group> GetGroups(string userid)
+        {
+            var groups = _context.Groups
+                .Include(p => p.Privacy).Include(g => g.Type)
+                .Include(gu => gu.Owner)
+                .Where(p => p.Deleted == false);
 
+            if (!string.IsNullOrEmpty(userid))
+            {
+                groups= groups.Where(gu => gu.Owner.Id == userid);
+            }
+
+            return groups.AsNoTracking();
+        }
     }
 
 }

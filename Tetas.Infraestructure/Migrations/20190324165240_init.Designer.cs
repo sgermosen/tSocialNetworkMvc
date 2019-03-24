@@ -10,8 +10,8 @@ using Tetas.Infraestructure;
 namespace Tetas.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190223142354_MainStructureAndRenamingAspTbl")]
-    partial class MainStructureAndRenamingAspTbl
+    [Migration("20190324165240_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -216,7 +216,6 @@ namespace Tetas.Infraestructure.Migrations
                     b.Property<string>("OwnerId");
 
                     b.Property<string>("PictureUrl")
-                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<long?>("PrivacyId");
@@ -503,7 +502,7 @@ namespace Tetas.Infraestructure.Migrations
             modelBuilder.Entity("Tetas.Domain.Entities.GroupPost", b =>
                 {
                     b.HasOne("Tetas.Domain.Entities.Group", "Group")
-                        .WithMany()
+                        .WithMany("GroupPosts")
                         .HasForeignKey("GroupId");
 
                     b.HasOne("Tetas.Domain.Entities.ApplicationUser", "Owner")
@@ -518,7 +517,7 @@ namespace Tetas.Infraestructure.Migrations
                         .HasForeignKey("OwnerId");
 
                     b.HasOne("Tetas.Domain.Entities.GroupPost", "Post")
-                        .WithMany()
+                        .WithMany("GroupPostComments")
                         .HasForeignKey("PostId");
                 });
 
@@ -536,7 +535,7 @@ namespace Tetas.Infraestructure.Migrations
                         .HasForeignKey("OwnerId");
 
                     b.HasOne("Tetas.Domain.Entities.Post", "Post")
-                        .WithMany()
+                        .WithMany("PostComments")
                         .HasForeignKey("PostId");
                 });
 #pragma warning restore 612, 618

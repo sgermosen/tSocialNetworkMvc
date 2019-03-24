@@ -1,7 +1,4 @@
-﻿using System.Text;
-using Microsoft.IdentityModel.Tokens;
-
-namespace Tetas.Web
+﻿namespace Tetas.Web
 {
     using Domain.Entities;
     using Helpers;
@@ -15,8 +12,10 @@ namespace Tetas.Web
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.IdentityModel.Tokens;
     using Repositories.Contracts;
     using Repositories.Implementations;
+    using System.Text;
 
     public class Startup
     {
@@ -37,7 +36,7 @@ namespace Tetas.Web
             services.AddIdentity<ApplicationUser, IdentityRole>(cfg =>
                 {
                     cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
-                    cfg.SignIn.RequireConfirmedEmail = true;
+                    cfg.SignIn.RequireConfirmedEmail = false;
                     cfg.User.RequireUniqueEmail = true;
                     cfg.Password.RequireDigit = false;
                     cfg.Password.RequiredUniqueChars = 0;
@@ -68,14 +67,17 @@ namespace Tetas.Web
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("sGDatabaseCnn"));
             });
-            
+
+              services.AddTransient<SeedDb>();
+
             #region RepositoryScopes
 
              services.AddScoped<IPost, PostRepository>();
+            services.AddScoped<IGroup, GroupRepository>();
 
             #endregion
 
-            services.AddTransient<SeedDb>();
+          
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
 

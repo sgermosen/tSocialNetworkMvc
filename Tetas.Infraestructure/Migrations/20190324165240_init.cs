@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tetas.Infraestructure.Migrations
 {
-    public partial class MainStructureAndRenamingAspTbl : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -109,7 +109,7 @@ namespace Tetas.Infraestructure.Migrations
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Deleted = table.Column<bool>(nullable: false),
                     Link = table.Column<string>(maxLength: 500, nullable: false),
-                    PictureUrl = table.Column<string>(maxLength: 500, nullable: false),
+                    PictureUrl = table.Column<string>(maxLength: 500, nullable: true),
                     Description = table.Column<string>(maxLength: 1000, nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     OwnerId = table.Column<string>(nullable: true),

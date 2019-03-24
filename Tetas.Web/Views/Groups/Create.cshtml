@@ -1,12 +1,21 @@
-﻿@model Tetas.Domain.Entities.Group
+﻿@model GroupViewModel
 
-<h4>Group</h4>
+@{
+    ViewData["Title"] = "Create Group";
+}
+
 <hr />
 <div class="row">
     <div class="col-md-8">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+            <div class="form-group">
+                <label asp-for="TypeId" class="control-label"></label>
+                <select asp-for="TypeId"
+                        asp-items="Model.GroupTypes"
+                        class="form-control"></select>
+                <span asp-validation-for="TypeId" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -17,19 +26,23 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-             
-           
-          
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label asp-for="PrivacyId" class="control-label"></label>
+                <select asp-for="PrivacyId"
+                        asp-items="Model.Privacies"
+                        class="form-control"></select>
+                <span asp-validation-for="PrivacyId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create Post" class="btn btn-primary" />
+                <a asp-controller="Home" asp-action="Index" class="btn btn-warning">Cancel Creation</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

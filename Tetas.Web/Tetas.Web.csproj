@@ -30,4 +30,9 @@
     <ProjectReference Include="..\Tetas.Repositories\Tetas.Repositories.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Constants\" />
+  </ItemGroup>
+
 </Project>

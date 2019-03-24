@@ -1,4 +1,6 @@
-﻿namespace Tetas.Infraestructure
+﻿using Tetas.Infraestructure.Data;
+
+namespace Tetas.Infraestructure
 {
     using Domain.Entities;
     using EntityConfigurations;
@@ -51,8 +53,7 @@
                     entityType.Relational().TableName = table.Substring(6);
                 }
             };
-
-           // services.AddTransient<SeedDb>();
+          
         }
 
         //public DbSet<Owner> Owners { get; set; }

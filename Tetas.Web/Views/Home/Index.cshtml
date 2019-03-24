@@ -5,6 +5,8 @@
     var categoryList2 = ViewBag.Categories2;
 
     var postList = new List<Post>();
+
+    var groupList = new List<Group>();
 }
 
 
@@ -45,7 +47,7 @@ else
     <div>
         <h3> Dernier On Your Groups</h3>
         <div id="tableHolder">
-            <partial name="_NewsPartial" model="postList" />
+            <partial name="_GroupsPartial" model="groupList" />
         </div>
     </div>
 
@@ -79,7 +81,7 @@ else
         <i class="fas fa-marker fa-5x"></i>
         <i class="far fa-meh-rolling-eyes fa-5x"></i>
         <i class="fas fa-praying-hands fa-5x"></i>
-        My Students after fail a test XD 
+        My Students after fail a test XD
         <i class="fas fa-pray fa-5x"></i>
         <i class="fas fa-receipt fa-5x"></i>
         <i class="fas fa-random fa-5x"></i>
@@ -211,6 +213,27 @@ else
                 //    },
                 //    'json');
             //});
+
+            url = '@Url.Action("GroupsFilter", "Home")';
+            $.ajax({
+                type: "POST",
+                url: url, //call your controller and action
+                data: {},
+                success: function (data) {
+
+                    if (data != null && (data.errorMessage == null || data.errorMessage === "")) {
+
+                        $('#groupsContent').html(data);
+                       }
+                    else {
+                        alert("An error ocurred", data.errorMessage);
+                    }
+
+                },
+                failure: function() {
+                    console.log("problems retriving group data");
+                }
+            });
 
        });
 

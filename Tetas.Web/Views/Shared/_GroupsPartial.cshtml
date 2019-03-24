@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Tetas.Domain.Entities.Group>
+
+
+<div id="groupsContent">
+    <p>
+        <a asp-action="Create" asp-controller="Groups" class="btn btn-primary">Create New Group</a>
+    </p>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>
+                Group Type
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Members
+            </th>
+             
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        1
+                    </td>
+                </tr>
+
+            }
+        }
+        </tbody>
+    </table>
+</div>

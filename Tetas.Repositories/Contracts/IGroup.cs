@@ -10,6 +10,8 @@ namespace Tetas.Repositories.Contracts
 
         IQueryable<Group> GetGroupWithPosts(string userid);
 
+         IQueryable<Group> GetGroups(string userid);
+
     }
      
 }

@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Tetas.Domain.Entities.Group>
+
+@{
+    ViewData["Title"] = "My Groups";
+    var groupList = ViewBag.MyGroup;
+}
+
+
+
+
+<div id="tableHolder">
+    <partial name="_GroupsPartial" model="groupList" />
+</div>
