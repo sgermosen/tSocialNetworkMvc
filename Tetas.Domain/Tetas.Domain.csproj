@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Entities\Continent.cs" />
+    <Compile Remove="Entities\Country.cs" />
+    <Compile Remove="Entities\Currency.cs" />
+    <Compile Remove="Entities\Gender.cs" />
+    <Compile Remove="Entities\MaritalSituation.cs" />
+    <Compile Remove="Entities\Ocupation.cs" />
+    <Compile Remove="Entities\PaymentType.cs" />
+    <Compile Remove="Entities\Periodicity.cs" />
+    <Compile Remove="Entities\Person.cs" />
+    <Compile Remove="Entities\Religion.cs" />
+    <Compile Remove="Entities\Scholarship.cs" />
+    <Compile Remove="Entities\Status.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Identity.Stores">
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.identity.stores\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Identity.Stores.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

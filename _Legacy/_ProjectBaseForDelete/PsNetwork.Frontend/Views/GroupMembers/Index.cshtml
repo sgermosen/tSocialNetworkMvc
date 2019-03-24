@@ -1,0 +1,54 @@
+﻿@model IEnumerable<PsNetwork.Domain.UserGroup>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Admin
+        </th>
+        <th>
+            Group Name
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var group in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => group.User.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => group.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Go to Group", "Post", new { id = group.UserGroupId })
+                |
+                @foreach (var member in group.GroupMembers)
+                {
+                    if (member.UserId == ViewBag.UserId)
+                    {
+                        @Html.ActionLink("Leave Group", "Leave", new {id = group.UserGroupId})
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Join", "Join", new {id = group.UserGroupId})
+                    }
+
+                }
+
+
+
+            </td>
+        </tr>
+    }
+
+</table>

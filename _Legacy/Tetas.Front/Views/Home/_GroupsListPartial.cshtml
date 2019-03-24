@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Tetas.Domain.Group>
+
+<table class="table">
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("View Group", "Edit", new { id = item.GroupId }) |
+            </td>
+        </tr>
+    }
+
+</table>

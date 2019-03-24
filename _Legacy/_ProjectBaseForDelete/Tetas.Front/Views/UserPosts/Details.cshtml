@@ -1,0 +1,50 @@
+﻿@model Tetas.Domain.DataEntities.UserPost
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>UserPost</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PostDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PostDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HeadPost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HeadPost)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StrPost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StrPost)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.UserPostId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

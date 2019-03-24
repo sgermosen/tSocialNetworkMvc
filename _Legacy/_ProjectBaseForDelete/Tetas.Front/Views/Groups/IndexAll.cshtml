@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Tetas.Domain.DataEntities.Group>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Groups</h2>
+
+
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            Category
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Picture))
+                {
+                    <img src="@Url.Content(item.Picture)" alt="Image" style="width: 40px; height: 40px" />
+                }
+            </td>
+            <td>
+
+                @Html.DisplayFor(modelItem => item.GroupType.Name)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @if (item.GroupMembers != null && item.GroupMembers.FirstOrDefault(p => p.UserId == @ViewBag.ConectedUserId) != null)
+                {
+                    @Html.DisplayFor(modelItem => item.GroupMembers.FirstOrDefault().Status.Name)}
+                else
+                {
+                    <div> Not Member</div>
+                }
+            </td>
+            <td>
+                @if (item.GroupMembers != null && item.GroupMembers.FirstOrDefault(p => p.UserId == @ViewBag.ConectedUserId) != null)
+                {
+                    @Html.ActionLink("Enter", "Details", new { id = item.GroupId }, new { @class = "btn btn-info" })
+                }
+                else
+                {
+                    @Html.ActionLink("Send Apply", "Apply", new { id = item.GroupId }, new { @class = "btn btn-warning" })
+
+                }
+                @if ( item.UserId == @ViewBag.ConectedUserId)
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.GroupId }, new { @class = "btn btn-danger" })
+                }
+                
+
+             </td>
+        </tr>
+    }
+
+</table>

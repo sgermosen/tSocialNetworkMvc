@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Tetas.Domain.DataEntities.GroupMember>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            Name
+        </th>
+
+        <th>Status</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @if (!string.IsNullOrEmpty(item.User.Picture))
+                {
+                    <img src="@Url.Content(item.User.Picture)" alt="Image" style="width: 40px; height: 40px" />
+                }
+            </td>
+            <td>
+
+                @Html.DisplayFor(modelItem => item.User.Name)
+                @Html.DisplayFor(modelItem => item.User.LastName)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Status.Name)
+            </td>
+            <td>
+                @if (item.StatusId != 1)
+                {
+                    @Html.ActionLink("Active", "ManageUsers", new { id = item.UserId, statusid = 1, groupid = item.GroupId }, new { @class = "btn btn-success" })
+                }
+                else
+                {
+                    @Html.ActionLink("Bann", "ManageUsers", new { id = item.UserId, statusid = 4, groupid = item.GroupId }, new { @class = "btn btn-danger" })
+                    @Html.ActionLink("Flagg", "ManageUsers", new { id = item.UserId, statusid = 3, groupid = item.GroupId }, new { @class = "btn btn-warning" })
+                    @Html.ActionLink("Inactive", "ManageUsers", new { id = item.UserId, statusid = 2, groupid = item.GroupId }, new { @class = "btn btn-danger" })
+
+                }
+            </td>
+        </tr>
+    }
+
+</table>

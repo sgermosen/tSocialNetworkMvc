@@ -1,0 +1,177 @@
+﻿
+@using System.Diagnostics
+@using Tetas.Domain
+@using Tetas.Domain.DataEntities
+@model IEnumerable<Tetas.Domain.DataEntities.UserPost>
+
+@{
+    ViewBag.Title = "Home";
+}
+<br /><br />
+
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div id="GroupTab">
+            <h4>My Groups</h4><br />
+            <div>    @Html.ActionLink("New Group", "Create", "Groups", new { id = @ViewBag.ConectedUserId }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Manage Groups", "Index", "Groups", new { id = @ViewBag.ConectedUserId }, new { @class = "btn btn-info" })
+            </div>
+            <table class="table">
+                
+                @{
+                    UserPost first = null;
+                    foreach (var p in Model)
+                    {
+                        if (p.UserId == @ViewBag.ConectedUserId)
+                        {
+                            first = p;
+                            break;
+                        }
+                    }
+                    if (first !=null && first.User != null)
+                    {
+                        var user = first.User; 
+                        if (user.Groups == null || user.Groups.Count == 0)
+                        {
+                            <tr>
+                                <td>
+                                    Theres No Groups, create one to begin the magic
+                                </td>
+                                <td></td>
+                            </tr>
+
+                        }
+                        else
+                        {
+                            foreach (var group in user.Groups)
+                            {
+                                //if (item.User.Groups == null || item.User.Groups.Count==0)
+
+
+                                {
+                                
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => group.Name)
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("View Group", "Details","Groups", new { id = group.GroupId },new{}) 
+                                        </td>
+                                    </tr>
+                                
+                                }
+                            }
+
+                        }
+                    }
+
+                    
+                }
+
+
+
+            </table>
+        </div>
+
+
+    </div>
+    <div class="col-md-8">
+        @Html.ActionLink("New Post", "Create", "UserPosts", new { }, new { @class = "btn btn-primary" })
+       | @Html.ActionLink("Discover Groups", "IndexAll", "Groups", new { }, new { @class = "btn btn-info" })
+        <br /><br />
+
+        @foreach (var item in Model)
+        {
+            <div class="form-group">
+                <div class="col-md-1">
+
+                    @{
+                        var firstOrDefault = item.User;
+                    }
+                    @if (firstOrDefault != null && !string.IsNullOrEmpty(firstOrDefault.Picture))
+                    {
+                        <img src="@Url.Content(item.User.Picture)" alt="Image" style="width: 50px;height:50px" />
+                    }
+                </div>
+                <div class="col-md-11">
+                    <span style="font-weight: bold;color:blue">
+                        @Html.DisplayFor(modelItem => item.User.Name)
+                        @Html.DisplayFor(modelItem => item.User.LastName)
+                    </span> post on <span style="font-size:small">  @Html.DisplayFor(modelItem => item.PostDate)</span>
+                    <p style="font-weight: bold">
+                        @Html.DisplayFor(modelItem => item.HeadPost)
+
+                    </p>
+                    <p style="">
+                        @Html.DisplayFor(modelItem => item.StrPost)
+                    </p>
+                    @Html.ActionLink("Comment Post", "CreateComment", "UserPosts", new { id = item.UserPostId }, new { }) &nbsp;
+                    @if (item.UserId == @ViewBag.ConectedUserId)
+                    {
+                        @Html.ActionLink("Edit Post", "Edit", "UserPosts", new { id = item.UserPostId }, new { })
+                        <a>&nbsp;</a>
+                        @Html.ActionLink(
+                            "Delete Post",
+                            "Delete",  "UserPosts",
+                            new { id = item.UserPostId },
+                            new { onclick = "return confirm('Are you sure you wish to delete this post and all their comments on it?');" })
+
+                    }
+                    <br />  <br />
+                </div>
+            </div>
+
+
+            <br />
+            <br /> <br />
+
+            foreach (var item2 in item.PostComments)
+            {
+                <div style="padding-left: 60px">
+                    <div class="col-md-1">
+                        @if (!string.IsNullOrEmpty(item2.User.Picture))
+                        {
+                            <img src="@Url.Content(item2.User.Picture)" alt="Image" style="width: 40px;height:40px" />
+                        }
+                    </div>
+                    <div class="col-md-11">
+                        <span style="font-size: large;color:green"> @Html.DisplayFor(modelItem => item2.User.Name)</span>
+                        comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.CommentDate)</span>
+
+                        <p style="color: black"> @Html.Raw(item2.StrComment) </p>
+                        @if (item2.UserId == @ViewBag.ConectedUserId)
+                        {
+                            @Html.ActionLink("Edit comment", "EditComment", "UserPosts", new { id = item2.PostCommentId }, new { })
+                            <a>&nbsp;</a>
+                        }
+
+                        @if (item.UserId == @ViewBag.ConectedUserId || item2.UserId == @ViewBag.ConectedUserId)
+                        {
+                            @Html.ActionLink(
+                                "Delete comment",
+                                "DeleteComment",  "UserPosts",
+                                new { id = item2.PostCommentId },
+                                new { onclick = "return confirm('Are you sure you wish to delete this comment?');" })
+
+                        }
+                    </div>
+                </div>
+                <br /> <hr />
+            }
+
+            <br /><br />
+            <hr />
+        }
+
+    </div>
+    
+</div>

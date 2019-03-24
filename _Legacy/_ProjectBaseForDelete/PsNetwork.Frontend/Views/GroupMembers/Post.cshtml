@@ -1,0 +1,46 @@
+﻿@model IEnumerable<PsNetwork.Domain.GroupPost>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "CreatePost",new {id= ViewBag.UserGroupId})
+</p>
+ 
+
+    @foreach (var item in Model)
+    {
+
+        <div>
+            <span style="font-size: large"> @Html.DisplayFor(modelItem => item.User.FirstName)</span>
+            post on <span style="font-size: small"> @Html.DisplayFor(modelItem => item.PostDate)</span>
+            <br/> <br/>
+            <pre style="color: blue">  @Html.Raw(item.PostStr) </pre>
+
+            @Html.ActionLink("Comment this post", "Comment", new {id = item.GroupPostId}) |
+
+            @Html.ActionLink("Edit post", "Edit", new {id = item.GroupPostId }) |
+
+            @Html.ActionLink("Delete post", "Delete", new {id = item.GroupPostId })
+            <br/> <br/>
+            @foreach (var item2 in item.GroupComments)
+            {
+                <div style="padding-left: 20px">
+                    <span style="font-size: large"> @Html.DisplayFor(modelItem => item2.User.FirstName)</span>
+                    comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.CommentDate)</span>
+
+                    <p style="color: black"> @Html.Raw(item2.Commentary) </p>
+
+                    @Html.ActionLink("Edit comment", "Edit", new {id = item2.GroupCommentId}) |
+
+                    @Html.ActionLink("Delete comment", "Delete", new {id = item2.GroupCommentId })
+
+                </div>
+
+            }
+        </div>
+
+    }

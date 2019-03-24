@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Tetas.Domain.DataEntities.User>
+
+@{
+    ViewBag.Title = "People";
+}
+
+<h2>People Index</h2>
+
+<p>
+    @Html.ActionLink("New Person", "Create",new{},new {@class="btn btn-primary"})
+</p>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            Country
+        </th>
+        <th>
+            Gender
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Last Name
+        </th>
+
+        <th>
+            Type
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @if (!string.IsNullOrEmpty(item.Picture))
+            {
+                <img src="@Url.Content(item.Picture)" alt="Image" style="width: 80px;height:80px" />
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Country.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Gender.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.UserType.Name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new {id = item.UserId}, new {@class = "btn btn-warning"}) |
+            @Html.ActionLink("Details", "Details", new {id = item.UserId}, new {@class = "btn btn-info"}) |
+            @Html.ActionLink("Delete", "Delete", new {id = item.UserId}, new {@class = "btn btn-danger"})
+        </td>
+    </tr>
+}
+
+</table>

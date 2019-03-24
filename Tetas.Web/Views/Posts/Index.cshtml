@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Tetas.Domain.Entities.Post>
+
+@{
+    ViewData["Title"] = "My Post";
+    var postList = ViewBag.MyPost;
+}
+
+ 
+
+ 
+<div id="tableHolder">
+    <partial name="_NewsPartial" model="postList" />
+</div>

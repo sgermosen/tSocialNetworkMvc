@@ -1,0 +1,38 @@
+Registration => Personal Info
+
+
+Pin post
+^
+|
+Post=> Comments => Reactions (Adore, Admire, Agree, Enjoy, Disagree, Dislike, Wtf?, Facepalm, Hate)
+|
+V
+Reactions
+
+Companion People (kind of companion can be: Pal, Buddy, Chum, Known, Couple, Partner)
+|
+V
+Follow People
+Point People
+
+Questions => ppr or ppa System (pay per answer) (mine)
+
+Book => Library/Bibliotec => Categories
+Article
+Fragment
+Short Books
+
+Pending Works, Schedule
+Interchanges
+Reviews
+Groups
+Events
+Articles
+Memes
+Condecorations
+Sale => Documents, articles
+Phrase
+Investigation
+Sarcasm
+Document
+Chat

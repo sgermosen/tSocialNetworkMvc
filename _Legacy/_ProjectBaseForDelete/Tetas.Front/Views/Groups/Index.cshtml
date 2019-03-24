@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Tetas.Domain.DataEntities.Group>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>My Groups</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", "Groups", new { id = @ViewBag.ConectedUserId }, new { @class = "btn btn-primary" })  
+</p>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+          Category
+        </th>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+          Members
+        </th>
+        
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @if (!string.IsNullOrEmpty(item.Picture))
+            {
+                <img src="@Url.Content(item.Picture)" alt="Image" style="width: 40px; height: 40px" />
+            }
+        </td>
+        <td>
+
+            @Html.DisplayFor(modelItem => item.GroupType.Name)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GroupMembers.Count)
+        </td>
+
+
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.GroupId }, new { @class = "btn btn-warning" })
+            @Html.ActionLink("Manage", "Details", new { id = item.GroupId }, new { @class = "btn btn-info" })
+            @Html.ActionLink("Delete", "Delete", new { id = item.GroupId }, new { @class = "btn btn-danger" })
+        </td>
+    </tr>
+}
+
+</table>

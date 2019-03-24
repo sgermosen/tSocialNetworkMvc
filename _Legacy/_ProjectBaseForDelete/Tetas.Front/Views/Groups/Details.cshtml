@@ -1,0 +1,63 @@
+﻿@using Tetas.Domain
+@model Tetas.Domain.DataEntities.Group
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>  @Html.DisplayFor(model => model.Name)</h2>
+
+<div>
+
+    <hr />
+    <div class="form-horizontal">
+        <div id="AdminPanel">
+            @{
+                GroupMember first = null;
+                if (Model.GroupMembers != null)
+                {
+                    foreach (var p in Model.GroupMembers)
+                    {
+                        if (p.UserId == @ViewBag.ConectedUserId)
+                        {
+                            first = p;
+                            break;
+                        }
+                    }
+                    if (first != null)
+                    {
+                        var myStatus = first.StatusId;
+
+                        if (myStatus == 0 || myStatus == 2 || myStatus == 4)
+                        {
+                            <div> You are not member of this group</div>
+                        }
+                        else if (myStatus == 1)
+                        {
+                            @Html.ActionLink("New Post", "Create", "Groups", new { }, new { @class = "btn btn-primary" })
+
+                        }
+                        else if (myStatus == 3)
+                        {
+                            <div> You've been flagged, you can see post but can't create it</div>
+                        }
+                        else
+                        {
+                            <div> Your Request have been send, but you need to be aproved by the administrator</div>
+                        }
+                    }
+                    else
+                    { <div> You are not member of this group</div>}
+                }
+            }
+
+            @if (Model.UserId == @ViewBag.ConectedUserId)
+            {
+                @Html.ActionLink("See Members and Application Request", "IndexRequest", "Groups", new { id = Model.GroupId }, new { @class = "btn btn-info" })
+            }
+        </div>
+
+
+    </div>
+</div>
+

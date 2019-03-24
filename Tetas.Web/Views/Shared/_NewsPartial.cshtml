@@ -1,0 +1,141 @@
+﻿@using System.Security.Claims
+@model IEnumerable<Tetas.Domain.Entities.Post>
+@*@{
+    var email = ViewBag.Email;
+}*@
+
+<div id="newsContent">
+    <p>
+        <a asp-action="Create" asp-controller="Posts" class="btn btn-primary">Create New Post</a>
+    </p>
+    @if (Model.Any())
+    {
+        foreach (var item in Model)
+
+        {
+            <div>
+                <span style="font-size: large">
+                    @Html.DisplayFor(modelItem => item.Owner.FullName)
+                </span>
+                post on <span style="font-size: small"> @Html.DisplayFor(modelItem => item.Date)</span>
+                <br /> <br />
+                <h6>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </h6>
+                <pre style="color: blue">  @Html.Raw(item.Body) </pre>
+
+
+                <a asp-action="React" asp-controller="Posts" asp-route-id="@item.Id">
+                    <i class="fas fa-bolt"></i>
+                    React!
+                </a>
+                <a asp-action="Comment" asp-controller="Posts" asp-route-id="@item.Id">
+                    <i class="far fa-comment"></i>
+                    Comment It!
+                </a>
+
+                @if (item.Owner.Email == User.Identity.Name)
+                {
+                    <a asp-action="Edit" asp-controller="Posts" asp-route-id="@item.Id">
+                        <i class="far fa-edit"></i>
+                        Edit It!
+                    </a>
+                    <a asp-action="Delete" asp-controller="Posts" asp-route-id="@item.Id">
+                        <i class="fas fa-slash"></i>
+                        Delete It!
+                    </a>
+                }
+
+                <a asp-action="Details" asp-controller="Posts" asp-route-id="@item.Id">
+                    <i class="far fa-eye"></i>
+                    Details It!
+                </a>
+
+
+                <br /> <br />
+                @if (item.PostComments.Any())
+                {
+
+                    foreach (var item2 in item.PostComments)
+                    {
+                        <div style="padding-left: 20px">
+                            <span style="font-size: large"> @Html.DisplayFor(modelItem => item2.Owner.Name)</span>
+                            comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.Date)</span>
+
+                            <p style="color: black"> @Html.Raw(item2.Body) </p>
+
+                            @if (item2.Owner.Email == User.Identity.Name)
+                            {
+                                <a asp-action="Edit" asp-controller="Posts" asp-route-id="@item2.Id">
+                                    <i class="far fa-comment-dots"></i>
+                                    Edit this comment
+                                </a>
+                            }
+                            @if (item2.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
+                            {
+                                <a asp-action="Delete" asp-controller="Posts" asp-route-id="@item2.Id">
+                                    <i class="fas fa-comment-slash"></i>
+                                    Delete this comment
+                                </a>
+                            }
+
+                        </div>
+
+                    }
+                }
+
+                <hr />
+            </div>
+
+        }
+    }
+
+</div>
+@*<table class="table table-striped table-bordered dt-responsive nowrap" id="newsTable">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Body)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UpdatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Deleted)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Deleted)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-controller="Posts" asp-route-id="@item.Id" class="btn btn-warning">Edit Post</a> |
+                    <a asp-action="Details" asp-controller="Posts" asp-route-id="@item.Id" class="btn btn-info">See on Details</a> |
+                    <a asp-action="Delete" asp-controller="Posts" asp-route-id="@item.Id" class="btn btn-danger">Delete Post</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>*@
