@@ -7,44 +7,48 @@
     </p>
     <table class="table table-bordered">
         <thead>
-        <tr>
-            <th>
-                Group Type
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-                Members
-            </th>
-             
-        </tr>
+            <tr>
+                <th>
+                    Group Type
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Members
+                </th>
+
+            </tr>
         </thead>
         <tbody>
-        @if (Model.Any())
-        {
-            foreach (var item in Model)
+            @if (Model.Any())
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Type.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        1
-                    </td>
-                </tr>
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type.Name)
+                        </td>
+                        <td>
+                            <a asp-action="Details"
+                               asp-controller="Groups"
+                               asp-route-id="@item.Id">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            1
+                        </td>
+                    </tr>
 
+                }
             }
-        }
         </tbody>
     </table>
 </div>

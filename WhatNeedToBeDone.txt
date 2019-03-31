@@ -1,22 +1,22 @@
 Registration => Personal Info
-(Need to be a valid email)
-
 
 Pin post
 ^
 |
-Post=> Comments => Reactions (Adore, Admire, Agree, Enjoy, Disagree, Dislike, Wtf?, Facepalm, Hate)
+Post=> Comments => Reactions
 |
 V
 Reactions
 
-Companion People (kind of companion can be: Pal, Buddy, Chum, Known, Couple, Partner)
+Companion People 
 |
 V
 Follow People
 Point People
 
 Questions => ppr or ppa System (pay per answer) (mine)
+
+Quizz(see menti.com concept)
 
 Book => Library/Bibliotec => Categories
 Article
@@ -37,3 +37,56 @@ Investigation
 Sarcasm
 Document
 Chat
+
+//////////////////Histories///////////
+Users
+1. User can register on the app with a valid email. 			(done)
+2. User can edit their personal info.
+3. User can Companion people (kind of companion can be: Pal,
+   Buddy, Chum, Known, Couple, Partner).
+4. User can follow people.
+5. User can point people.
+6. User can condecore people.
+7. Condecorations can be monetary payment.
+
+Posts
+1. User can create, edit, delete their posts. 				(done)
+2. User can pin (make favorite) a their or someone else posts.
+3. User can react (Adore, Admire, Agree, Enjoy, Disagree, 
+   Dislike, Wtf?, Facepalm, Hate) their or someone else posts.
+
+
+Post Comments
+1. User can create, edit, delete their comments on posts. 		(done)
+2. Post owner can delete comments on their posts. 			(done)
+2. User can react their or someone else comments.
+
+Groups
+1. User can create, edit, delete their groups.				(done)
+2. User can create, edit, delete post on groups.
+3. User can create, edit, delete comment on groups.
+4. User can ask for join to a groups.
+5. Group owner can acept or reject user application to a groups.
+6. Post owner can delete comments on their post on groups.
+7. Group owner can delete post on their groups.
+8. Group owner can delete comment on post on their groups.
+9. Group owner can bann users from their groups.
+10. Groups can show the members quantity.
+11. Post can be mark as principal (important) on groups.
+
+Quizz
+1. User can create, edit, delete quizz on their profiles.
+2. User can create, edit, delete quizz on their groups.
+3. User can create, edit, delete quiestions on their quizzes.
+4. User can create, edit, delete answers on their questions.
+5. User can take a quizz.
+6. System give the questions randomly to the user.
+7. System give the result of the quizz to the owner and to the user.
+8. Quizz owner can add from-to or permanent date to the quizz.
+9. Quizz owner can repeat quizz.
+10. System can suggest user to repeat their quizz by payment.
+
+Chats (signal r client)
+1. User can create, edit, delete chat with people.
+2. User can block people.
+

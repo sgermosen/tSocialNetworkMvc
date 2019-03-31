@@ -1,0 +1,27 @@
+﻿@model Tetas.Domain.Entities.Group
+@{
+    ViewData["Title"] = "Group Detail";
+}
+
+<p>
+    <a class="btn btn-warning" asp-action="Edit"
+       asp-controller="Groups"
+       asp-route-id="@Model.Id">
+        Edit this Group
+    </a>
+    <a class="btn btn-warning" asp-action="Delete"
+       asp-controller="Groups"
+       asp-route-id="@Model.Id">
+        Delete this Group
+    </a>
+    
+
+</p>
+
+<div>
+    @await Component.InvokeAsync("GroupMember")
+</div>
+<div>
+    @await Component.InvokeAsync("GroupPost")
+</div>
+
