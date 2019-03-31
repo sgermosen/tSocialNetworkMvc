@@ -1,27 +1,81 @@
-﻿@model Tetas.Domain.Entities.Group
+﻿@*@model Tetas.Domain.Entities.Group*@
+@model GroupTabViewModel
 @{
-    ViewData["Title"] = "Group Detail";
+    ViewData["Title"] = "Group Details";
 }
-
+<hr />
 <p>
     <a class="btn btn-warning" asp-action="Edit"
        asp-controller="Groups"
        asp-route-id="@Model.Id">
         Edit this Group
     </a>
-    <a class="btn btn-warning" asp-action="Delete"
+    <a class="btn btn-danger" asp-action="Delete"
        asp-controller="Groups"
        asp-route-id="@Model.Id">
         Delete this Group
     </a>
-    
-
 </p>
 
-<div>
-    @await Component.InvokeAsync("GroupMember")
-</div>
-<div>
-    @await Component.InvokeAsync("GroupPost")
-</div>
+@*<ul>
+        <li>
+            <a class=" active" id="home-tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab"   role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="contact-tab" data-toggle="tab"   role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+        </li>
+    </ul>*@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation"
+        class="nav-item">
+        <a class="nav-link @(Model.ActiveTab == Tetas.Web.Models.Tab.GroupPosts ? "active":string.Empty)"
+           asp-route-tabname="GroupPosts"
+           asp-action="SwitchToTabs">
+            Posts
+        </a>
+    </li>
+    <li role="presentation"
+        class=" nav-item">
+        <a class="nav-link  @(Model.ActiveTab == Tetas.Web.Models.Tab.GroupMembers ? "active":string.Empty)"
+           asp-route-tabname="GroupsMembers"
+           asp-action="SwitchToTabs">
+            Members
+        </a>
+    </li>
+    <li role="presentation"
+        class="nav-item">
+        <a class="nav-link  @(Model.ActiveTab == Tetas.Web.Models.Tab.Info ? "active":string.Empty)"
+           asp-route-tabname="Info"
+           asp-action="SwitchToTabs">
+            Info
+        </a>
+    </li>
+
+</ul>
+@switch (Model.ActiveTab)
+{
+    case Tetas.Web.Models.Tab.Info:
+        <div>
+            The info of this group
+        </div>
+        break;
+    case Tetas.Web.Models.Tab.GroupMembers:
+        @await Component.InvokeAsync("GroupMember")
+        break;
+    case Tetas.Web.Models.Tab.GroupPosts:
+        @await Component.InvokeAsync("GroupPost")
+        break;
+    default:
+        break;
+}
+
+@*<div>
+        @await Component.InvokeAsync("GroupMember")
+    </div>
+    <div>
+        @await Component.InvokeAsync("GroupPost")
+    </div>*@
 

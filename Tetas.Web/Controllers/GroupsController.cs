@@ -43,21 +43,50 @@
             return View();
         }
 
-        public async Task<IActionResult> Details(long? id)
+        public async Task<IActionResult> Details(long? id, GroupTabViewModel vm)
         {
-            if (id == null)
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
+
+            if (vm == null)
             {
-                return NotFound();
+                vm = new GroupTabViewModel
+                {
+                    ActiveTab = Tab.GroupPosts
+                };
             }
 
-            var group = await _groupRepository.FindByIdAsync(id.Value);
+            //var group = await _groupRepository.FindByIdAsync(id.Value);
 
-            if (group == null)
+            //if (group == null)
+            //{
+            //    return NotFound();
+            //}
+
+            return View(vm);
+        }
+
+        public IActionResult SwitchToTabs(string tabname)
+        {
+            var vm = new GroupTabViewModel();
+            switch (tabname)
             {
-                return NotFound();
-            }
-
-            return View(group);
+                case "Info":
+                    vm.ActiveTab = Tab.Info;
+                    break;
+                case "GroupsMembers":
+                    vm.ActiveTab = Tab.GroupMembers;
+                    break;
+                case "GroupPosts":
+                    vm.ActiveTab = Tab.GroupPosts;
+                    break;
+                default:
+                    vm.ActiveTab = Tab.Info;
+                    break;
+                    }
+            return RedirectToAction("Details", vm);
         }
 
         public IActionResult Create()
