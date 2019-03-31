@@ -190,6 +190,13 @@
             return View(group);
         }
 
+        public async Task<IActionResult> MyGroups()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var myGroups = _groupRepository.GetGroupWithPosts(user.Id);
+            return PartialView("_MyGroups", myGroups);
+        }
+
         private bool GroupExists(long id)
         {
             return _groupRepository.Exists(id);

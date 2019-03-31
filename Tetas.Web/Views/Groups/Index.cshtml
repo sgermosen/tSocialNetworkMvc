@@ -6,8 +6,42 @@
 }
 
 
-
+<form asp-controller="Groups">
+    <div id="groupEdit">
+        
+    </div>
+</form>
+<div id="myGroups">
+    
+</div>
 
 <div id="tableHolder">
     <partial name="_GroupsPartial" model="groupList" />
 </div>
+
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    var url = '@Url.Action("MyGroups", "Groups")';
+    $.ajax({
+        url: url,
+        type: "GET",
+        success: function (response) {
+            $('#myGroups').html(response);
+        }
+    });
+
+    //$.ajax({
+    //    url: "Edit",
+    //    type: "GET",
+    //    success: function(response) {
+    //        $('#groupEdit').html(response);
+    //    }
+    //});
+
+
+</script>
