@@ -51,19 +51,19 @@ Users
 8. User receive notifications.
 
 Posts
-1. User can create, edit, delete their posts. 				(done)
+1. User can create, edit, delete their posts. 				create,edit
 2. User can pin (make favorite) a their or someone else posts.
 3. User can react (Adore, Admire, Agree, Enjoy, Disagree, 
    Dislike, Wtf?, Facepalm, Hate) their or someone else posts.
 
 
 Post Comments
-1. User can create, edit, delete their comments on posts. 		(done)
-2. Post owner can delete comments on their posts. 			(done)
+1. User can create, edit, delete their comments on posts. 		create,edit
+2. Post owner can delete comments on their posts. 			
 2. User can react their or someone else comments.
 
 Groups
-1. User can create, edit, delete their groups.				(done)
+1. User can create, edit, delete their groups.				edit,create
 2. User can create, edit, delete post on groups.
 3. User can create, edit, delete comment on groups.
 4. User can ask for join to a groups.

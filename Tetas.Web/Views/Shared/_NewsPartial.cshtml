@@ -1,8 +1,8 @@
 ﻿@using System.Security.Claims
 @model IEnumerable<Tetas.Domain.Entities.Post>
 @*@{
-    var email = ViewBag.Email;
-}*@
+        var email = ViewBag.Email;
+    }*@
 
 <div id="newsContent">
     <p>
@@ -20,7 +20,7 @@
                 post on <span style="font-size: small"> @Html.DisplayFor(modelItem => item.Date)</span>
                 <br /> <br />
                 <h6>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    Post Title: @Html.DisplayFor(modelItem => item.Name)
                 </h6>
                 <pre style="color: blue">  @Html.Raw(item.Body) </pre>
 
@@ -58,28 +58,31 @@
 
                     foreach (var item2 in item.PostComments)
                     {
-                        <div style="padding-left: 20px">
-                            <span style="font-size: large"> @Html.DisplayFor(modelItem => item2.Owner.Name)</span>
-                            comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.Date)</span>
+            <div style="padding-left: 20px" class="rcorners2">
+                <span style="font-size: large"> @Html.DisplayFor(modelItem => item2.Owner.Name)</span>
+                comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.Date)</span>
 
-                            <p style="color: black"> @Html.Raw(item2.Body) </p>
+                           <p style="color: black"> Comment Title: @Html.DisplayFor(modelItem => item2.Name)</p>
+                <div class="rcorners1">
 
-                            @if (item2.Owner.Email == User.Identity.Name)
-                            {
-                                <a asp-action="Edit" asp-controller="Posts" asp-route-id="@item2.Id">
-                                    <i class="far fa-comment-dots"></i>
-                                    Edit this comment
-                                </a>
-                            }
-                            @if (item2.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
-                            {
-                                <a asp-action="Delete" asp-controller="Posts" asp-route-id="@item2.Id">
-                                    <i class="fas fa-comment-slash"></i>
-                                    Delete this comment
-                                </a>
-                            }
+                    <p style="color: black"> @Html.Raw(item2.Body) </p>
+                </div>
+                @if (item2.Owner.Email == User.Identity.Name)
+                {
+                    <a asp-action="EditComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                        <i class="far fa-comment-dots"></i>
+                        Edit this comment
+                    </a>
+                }
+                @if (item2.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
+                {
+                    <a asp-action="DeleteComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                        <i class="fas fa-comment-slash"></i>
+                        Delete this comment
+                    </a>
+                }
 
-                        </div>
+            </div>
 
                     }
                 }

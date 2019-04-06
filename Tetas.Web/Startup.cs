@@ -72,12 +72,13 @@
 
             #region RepositoryScopes
 
-             services.AddScoped<IPost, PostRepository>();
+             //services.AddScoped<IPostComment, PostCommentRepository>();
+            services.AddScoped<IPost, PostRepository>();
             services.AddScoped<IGroup, GroupRepository>();
-            services.AddScoped<IPsSelectList, PsSelectList>();
+        
             #endregion
 
-
+    services.AddScoped<IPsSelectList, PsSelectList>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
 

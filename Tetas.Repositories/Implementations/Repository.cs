@@ -18,6 +18,12 @@
         {
             _context = context;
         }
+             
+
+        public Task CreateAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<TEntity> AddAsync(TEntity entity)
         {
@@ -33,17 +39,27 @@
             return entity;
         }
 
-        public Task CreateAsync(TEntity entity)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> DeleteAsync(TEntity entity)
         {
             _context.Set<TEntity>().Remove(entity);
             int result = await _context.SaveChangesAsync();
 
             return result > 0;
+        }
+
+        public async Task<bool> UpdateAsync(TEntity entity)
+        {
+            _context.Update(entity);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<bool> ExistAsync(long id)
@@ -90,19 +106,6 @@
             return entity;
         }
 
-        public async Task<bool> UpdateAsync(TEntity entity)
-        {
-            _context.Update(entity);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            return true;
-        }
+    
     }
 }

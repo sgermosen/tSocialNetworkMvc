@@ -18,7 +18,7 @@ namespace Tetas.Repositories.Implementations
 
         public IQueryable<Group> GetGroupWithPostsAndComments(string userid,long groupid)
         {
-            var groups =  _context.Groups.Where(p=>p.Id==groupid)
+            var groups =  _context.Groups.Where(p=>p.Id==groupid && p.Deleted !=true)
                 .Include(p => p.Privacy).Include(t => t.Type)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpc=>gpc.GroupPostComments).ThenInclude(gpcu=>gpcu.Owner)
                 .Include(gp=>gp.GroupPosts).ThenInclude(gpu=>gpu.Owner)
@@ -36,7 +36,7 @@ namespace Tetas.Repositories.Implementations
         {
             var groups = _context.Groups.Include(p => p.Privacy).Include(t => t.Type)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpu => gpu.Owner)
-                .Include(gu => gu.Owner).Where(p => p.Deleted == false);
+                .Include(gu => gu.Owner).Where(p => p.Deleted != true);
 
             if (!string.IsNullOrEmpty(userid))
             {
@@ -63,7 +63,7 @@ namespace Tetas.Repositories.Implementations
 
         public async Task<Group> GetGroupWithPostsAndComments(long groupid)
         {
-            var group = await _context.Groups.Where(p => p.Id == groupid)
+            var group = await _context.Groups.Where(p => p.Id == groupid && p.Deleted != true)
                 .Include(p => p.Privacy).Include(t => t.Type)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpc => gpc.GroupPostComments).ThenInclude(gpcu => gpcu.Owner)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpu => gpu.Owner)

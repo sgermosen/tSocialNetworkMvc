@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\AccountController-DESKTOP-5ITE3J2.cs" />
+    <Compile Remove="Controllers\PostCommentsController.cs" />
   </ItemGroup>
 
   <ItemGroup>

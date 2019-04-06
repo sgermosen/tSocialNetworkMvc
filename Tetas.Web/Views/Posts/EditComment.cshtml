@@ -1,0 +1,45 @@
+﻿@model PostCommentViewModel
+
+@{
+    ViewData["Title"] = "Edit Comment";
+}
+
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="EditComment">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Post" />
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Date" />
+            <input type="hidden" asp-for="Owner" />
+            <input type="hidden" asp-for="PostId" />
+            <input type="hidden" asp-for="OwnerId" />
+
+            <div class="form-group">
+                <label>Comment Title</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Body" class="control-label"></label>
+                <textarea rows="3" asp-for="Body" class="form-control"></textarea>
+                <span asp-validation-for="Body" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="form-group">
+                <input type="submit" value="Save Edition" class="btn btn-primary" />
+                <a asp-controller="Home" asp-action="Index" class="btn btn-warning">Cancel Edition</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -261,7 +261,7 @@
                 return NotFound();
             }
 
-            var group = await _groupRepository.FindByIdAsync(id.Value);
+            var group = await _groupRepository.GetGroupWithPostsAndComments(id.Value);
 
             if (group == null)
             {

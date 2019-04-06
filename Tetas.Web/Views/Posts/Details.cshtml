@@ -1,42 +1,101 @@
 ﻿@model Tetas.Domain.Entities.Post
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Post Details";
 }
 
-<h1>Details</h1>
+<hr />
+@*<dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Body)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Body)
+    </dd>*@
+@*<p>
+    @if (Model.Owner.Email == User.Identity.Name)
+    {
+        <a class="btn btn-warning" asp-action="Edit"
+           asp-route-id="@Model.Id">
+            Edit this Post
+        </a>
+        <a class="btn btn-danger" asp-action="Delete"
+           asp-route-id="@Model.Id">
+            Delete this Post
+        </a>
 
+    }
+</p>*@
 <div>
-    <h4>Post</h4>
+    @if (Model.Owner.Email != User.Identity.Name) { 
+        <span style="font-size: large">
+            @Html.DisplayFor(model => model.Owner.FullName)
+        </span>}
+    post on <span style="font-size: small"> @Html.DisplayFor(model => model.Date)</span>
+    <br /> <br />
+    <h6>
+        Post Title: @Html.DisplayFor(model => model.Name)
+    </h6>
+    <pre style="color: blue">  @Html.Raw(Model.Body) </pre>
+
+
+    <a asp-action="React" asp-controller="Posts" asp-route-id="@Model.Id">
+        <i class="fas fa-bolt"></i>
+        React!
+    </a>
+    <a asp-action="Comment" asp-controller="Posts" asp-route-id="@Model.Id">
+        <i class="far fa-comment"></i>
+        Comment It!
+    </a>
+
+    @if (Model.Owner.Email == User.Identity.Name)
+    {
+        <a asp-action="Edit" asp-controller="Posts" asp-route-id="@Model.Id">
+            <i class="far fa-edit"></i>
+            Edit It!
+        </a>
+        <a asp-action="Delete" asp-controller="Posts" asp-route-id="@Model.Id">
+            <i class="fas fa-slash"></i>
+            Delete It!
+        </a>
+    }
+
+    <br /> <br />
+    @if (Model.PostComments.Any())
+    {
+
+        foreach (var item2 in Model.PostComments)
+        {
+            <div style="padding-left: 20px" class="rcorners2">
+
+                <span style="font-size: large"> @Html.DisplayFor(modelItem => item2.Owner.Name)</span>
+                comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.Date)</span>
+                <div>
+                    <p style="color: black">  Comment Title: @Html.Raw(item2.Name) </p>
+
+                </div>
+                <div class="rcorners1">
+                    <p> @Html.Raw(item2.Body) </p>
+
+                </div>
+                @if (item2.Owner.Email == User.Identity.Name)
+                {
+                    <a asp-action="EditComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                        <i class="far fa-comment-dots"></i>
+                        Edit this comment
+                    </a>
+                }
+                @if (item2.Owner.Email == User.Identity.Name || Model.Owner.Email == User.Identity.Name)
+                {
+                    <a asp-action="DeleteComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                        <i class="fas fa-comment-slash"></i>
+                        Delete this comment
+                    </a>
+                }
+
+            </div>
+
+        }
+    }
+
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Body)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Body)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Deleted)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Deleted)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
 </div>

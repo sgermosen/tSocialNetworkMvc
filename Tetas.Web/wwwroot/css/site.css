@@ -9,7 +9,26 @@
 html {
   font-size: 14px;
 }
- 
+
+.rcorners1 {
+    border-radius: 25px;
+    background: #F2F3F5;
+    padding: 20px;
+}
+
+.rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px;
+}
+
+.rcorners3 {
+    border-radius: 25px;
+    background: url(paper.gif);
+    background-position: left top;
+    background-repeat: repeat;
+    padding: 20px;
+}
 
 .border-top {
   border-top: 1px solid #e5e5e5;
