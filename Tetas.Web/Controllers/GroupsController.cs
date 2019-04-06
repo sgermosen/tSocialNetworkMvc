@@ -14,34 +14,33 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    public class GroupsController : Controller
+    public class GroupsController : PsBaseController
     {
         private readonly IGroup _groupRepository;
-        private readonly IUserHelper _userHelper;
-        private readonly IConfiguration _configuration;
-        private readonly IPsSelectList _psSelectList;
-        private readonly GenericSelectList _genericSelectList;
-      
+       // private readonly IConfiguration _configuration;
+      //  private readonly IPsSelectList _psSelectList;
+
         //  private readonly Repository<Privacy> _privacyRepo;
         // private readonly Repository<GroupType> _groupTypeRepo;
         // private readonly ApplicationDbContext _context;
-
-        public GroupsController(IGroup groupRepository,
-            IUserHelper userHelper,IConfiguration configuration, IPsSelectList psSelectList)
+       
+        public GroupsController(IUserHelper userHelper,
+            IConfiguration configuration,
+            IPsSelectList psSelectList,
+            IGroup groupRepository) : base( userHelper, configuration, psSelectList)
         {
             _groupRepository = groupRepository;
-            _userHelper = userHelper;
-            _configuration = configuration;
-            _psSelectList = psSelectList;
-            _genericSelectList = new GenericSelectList();
-       
+          //  _configuration = configuration;
+           // _psSelectList = psSelectList;
+           // _genericSelectList = new GenericSelectList();
+          //  UserHelper = userHelper;
           //  _privacyRepo = new Repository<Privacy>(context);
           // _groupTypeRepo = new Repository<GroupType>(context);
         }
 
         public async Task<IActionResult> Index()
         {
-            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var user = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
             ViewBag.MyGroup = _groupRepository.GetGroupWithPosts(user.Id);
             return View();
         }
@@ -101,14 +100,14 @@
 
         public async Task<IActionResult> Create()
         {
-           var groupTypes = await _psSelectList.GetListGroupTypes();
+           var groupTypes = await PsSelectList.GetListGroupTypes();
 
-           var privacies =  await _psSelectList.GetListPrivacies();
+           var privacies =  await PsSelectList.GetListPrivacies();
 
             var group = new GroupViewModel
             {
-                Privacies = _genericSelectList.CreateSelectList(privacies, x => x.Id, x => x.Name),
-                GroupTypes = _genericSelectList.CreateSelectList(groupTypes, x => x.Id, x => x.Name)
+                Privacies = GenericSelectList.CreateSelectList(privacies, x => x.Id, x => x.Name),
+                GroupTypes = GenericSelectList.CreateSelectList(groupTypes, x => x.Id, x => x.Name)
             };
 
             return View(group);
@@ -116,24 +115,24 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(GroupViewModel view)
+        public async Task<IActionResult> Create(GroupViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                var user = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
                 if (user == null)
                 {
                     return NotFound();
                 }
 
-                var group = await MakeGroup(view, user, true);
+                var group = await MakeGroup(vm, user, true);
 
-                await _groupRepository.AddAsync(@group);
+                await _groupRepository.AddAsync(group);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname="GroupPosts", group.Id});
             }
 
-            return View(view);
+            return View(vm);
         }
 
         public async Task<Group> MakeGroup(GroupViewModel view,
@@ -143,16 +142,21 @@
             {
                 Name = view.Name,
                 Description = view.Description,
-                Type = await _psSelectList.GetGroupTypeAsync(view.TypeId),
-                Privacy = await _psSelectList.GetPrivacyAsync(view.PrivacyId)
+                Type = await PsSelectList.GetGroupTypeAsync(view.TypeId),
+                Privacy = await PsSelectList.GetPrivacyAsync(view.PrivacyId)
             };
 
             if (creating)
             {
-                group.Link = $"{_configuration["Tokens:UrlBase"]}{view.Name.Replace(" ", "")}";
+                group.Link = $"{Configuration["Tokens:UrlBase"]}{view.Name.Replace(" ", "")}";
                 group.Owner = user;
                 group.CreationDate = DateTime.UtcNow;
-            };
+            }
+            else
+            {
+                group.Id = view.Id;
+                group.Link = view.Link;
+            }
 
             return group;
         }
@@ -171,12 +175,12 @@
                 return NotFound();
             }
                         
-            var groupTypes = await _psSelectList.GetListGroupTypes();
+            var groupTypes = await PsSelectList.GetListGroupTypes();
 
-            var privacies = await _psSelectList.GetListPrivacies();
+            var privacies = await PsSelectList.GetListPrivacies();
 
 
-            var pList = _genericSelectList.CreateSelectList(privacies, x => x.Id, x => x.Name);
+            var pList = GenericSelectList.CreateSelectList(privacies, x => x.Id, x => x.Name);
                       
             var vm = new GroupViewModel
             {
@@ -192,7 +196,7 @@
                 PrivacyId = group.Privacy.Id,
                 Id = group.Id,
                 Privacies = pList,
-                GroupTypes = _genericSelectList.CreateSelectList(groupTypes, x => x.Id, x => x.Name)
+                GroupTypes = GenericSelectList.CreateSelectList(groupTypes, x => x.Id, x => x.Name)
             };
             
             return View(vm);
@@ -212,7 +216,14 @@
 
                 try
                 {
-                    await _groupRepository.UpdateAsync(vm);
+                    var user = await CurrentUser(); 
+                    if (user == null)
+                    {
+                        return NotFound();
+                    }
+                    var group = await MakeGroup(vm, user, false);
+                    await _groupRepository.UpdateAsync(group);
+                    //vm.Id = group.Id;
 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -226,14 +237,15 @@
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
+
             }
             return View(vm);
         }
 
         public async Task<IActionResult> MyGroups()
         {
-            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var user = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
             var myGroups = _groupRepository.GetGroupWithPosts(user.Id);
             return PartialView("_MyGroups", myGroups);
         }
