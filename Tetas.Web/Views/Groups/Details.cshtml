@@ -4,18 +4,8 @@
     ViewData["Title"] = "Group Details";
 }
 <hr />
-<p>
-    <a class="btn btn-warning" asp-action="Edit"
-       asp-controller="Groups"
-       asp-route-id="@Model.Id">
-        Edit this Group
-    </a>
-    <a class="btn btn-danger" asp-action="Delete"
-       asp-controller="Groups"
-       asp-route-id="@Model.Id">
-        Delete this Group
-    </a>
-</p>
+
+<input type="hidden" asp-for="Id" />
 
 @*<ul>
         <li>
@@ -32,6 +22,7 @@
     <li role="presentation"
         class="nav-item">
         <a class="nav-link @(Model.ActiveTab == Tetas.Web.Models.Tab.GroupPosts ? "active":string.Empty)"
+           asp-route-id="@Model.Id"
            asp-route-tabname="GroupPosts"
            asp-action="SwitchToTabs">
             Posts
@@ -40,6 +31,7 @@
     <li role="presentation"
         class=" nav-item">
         <a class="nav-link  @(Model.ActiveTab == Tetas.Web.Models.Tab.GroupMembers ? "active":string.Empty)"
+           asp-route-id="@Model.Id"
            asp-route-tabname="GroupsMembers"
            asp-action="SwitchToTabs">
             Members
@@ -48,6 +40,7 @@
     <li role="presentation"
         class="nav-item">
         <a class="nav-link  @(Model.ActiveTab == Tetas.Web.Models.Tab.Info ? "active":string.Empty)"
+           asp-route-id="@Model.Id"
            asp-route-tabname="Info"
            asp-action="SwitchToTabs">
             Info
@@ -59,7 +52,26 @@
 {
     case Tetas.Web.Models.Tab.Info:
         <div>
-            The info of this group
+            The info of this group.
+            <p>
+                @Model.Name
+            </p>
+            <p>
+                @Model.Description
+            </p>
+
+            <p>
+                <a class="btn btn-warning" asp-action="Edit"
+                   asp-controller="Groups"
+                   asp-route-id="@Model.Id">
+                    Edit this Group
+                </a>
+                <a class="btn btn-danger" asp-action="Delete"
+                   asp-controller="Groups"
+                   asp-route-id="@Model.Id">
+                    Delete this Group
+                </a>
+            </p>
         </div>
         break;
     case Tetas.Web.Models.Tab.GroupMembers:

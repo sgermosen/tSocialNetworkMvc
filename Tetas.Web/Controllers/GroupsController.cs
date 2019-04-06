@@ -19,21 +19,24 @@
         private readonly IGroup _groupRepository;
         private readonly IUserHelper _userHelper;
         private readonly IConfiguration _configuration;
+        private readonly IPsSelectList _psSelectList;
         private readonly GenericSelectList _genericSelectList;
-        private readonly Repository<Privacy> _privacyRepo;
-        private readonly Repository<GroupType> _groupTypeRepo;
+      
+        //  private readonly Repository<Privacy> _privacyRepo;
+        // private readonly Repository<GroupType> _groupTypeRepo;
         // private readonly ApplicationDbContext _context;
 
         public GroupsController(IGroup groupRepository,
-            IUserHelper userHelper,
-            ApplicationDbContext context, IConfiguration configuration)
+            IUserHelper userHelper,IConfiguration configuration, IPsSelectList psSelectList)
         {
             _groupRepository = groupRepository;
             _userHelper = userHelper;
             _configuration = configuration;
+            _psSelectList = psSelectList;
             _genericSelectList = new GenericSelectList();
-            _privacyRepo = new Repository<Privacy>(context);
-            _groupTypeRepo = new Repository<GroupType>(context);
+       
+          //  _privacyRepo = new Repository<Privacy>(context);
+          // _groupTypeRepo = new Repository<GroupType>(context);
         }
 
         public async Task<IActionResult> Index()
@@ -45,10 +48,10 @@
 
         public async Task<IActionResult> Details(long? id, GroupTabViewModel vm)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             if (vm == null)
             {
@@ -58,19 +61,26 @@
                 };
             }
 
-            //var group = await _groupRepository.FindByIdAsync(id.Value);
+            var group = await _groupRepository.FindByIdAsync(id.Value);
 
-            //if (group == null)
-            //{
-            //    return NotFound();
-            //}
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            vm.Name = group.Name;
+            vm.Description = group.Description;
+            vm.Id = id.Value;
 
             return View(vm);
         }
 
-        public IActionResult SwitchToTabs(string tabname)
+        public IActionResult SwitchToTabs(string tabname, long id)
         {
-            var vm = new GroupTabViewModel();
+            var vm = new GroupTabViewModel
+            {
+                Id = id
+            };
             switch (tabname)
             {
                 case "Info":
@@ -85,39 +95,21 @@
                 default:
                     vm.ActiveTab = Tab.Info;
                     break;
-                    }
+            }
             return RedirectToAction("Details", vm);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var groupTypes = new List<GroupType>
-            {
-                new GroupType
-                {
-                    Id = 0,
-                    Name = "Choose One Group Type"
-                }
-            };
+           var groupTypes = await _psSelectList.GetListGroupTypes();
 
-            var privacies = new List<Privacy>
-            {
-                new Privacy
-                {
-                    Id = 0,
-                    Name = "Choose One Privacy Level"
-                }
-            };
-
-            groupTypes.AddRange(_groupTypeRepo.GetAll().ToList());
+           var privacies =  await _psSelectList.GetListPrivacies();
 
             var group = new GroupViewModel
             {
                 Privacies = _genericSelectList.CreateSelectList(privacies, x => x.Id, x => x.Name),
                 GroupTypes = _genericSelectList.CreateSelectList(groupTypes, x => x.Id, x => x.Name)
             };
-
-            privacies.AddRange(_privacyRepo.GetAll().ToList());
 
             return View(group);
         }
@@ -147,16 +139,12 @@
         public async Task<Group> MakeGroup(GroupViewModel view,
             ApplicationUser user, bool creating)
         {
-            var groupType = await _groupTypeRepo.GetByIdAsync(view.TypeId);
-
-            var privacy = await _privacyRepo.GetByIdAsync(view.PrivacyId);
-
             var group = new Group
             {
                 Name = view.Name,
                 Description = view.Description,
-                Type = groupType,
-                Privacy = privacy
+                Type = await _psSelectList.GetGroupTypeAsync(view.TypeId),
+                Privacy = await _psSelectList.GetPrivacyAsync(view.PrivacyId)
             };
 
             if (creating)
@@ -176,21 +164,45 @@
                 return NotFound();
             }
 
-            var group = await _groupRepository.FindByIdAsync(id.Value);
+            var group =  await _groupRepository.GetGroupWithPostsAndComments(id.Value);
 
             if (group == null)
             {
                 return NotFound();
             }
+                        
+            var groupTypes = await _psSelectList.GetListGroupTypes();
 
-            return View(group);
+            var privacies = await _psSelectList.GetListPrivacies();
+
+
+            var pList = _genericSelectList.CreateSelectList(privacies, x => x.Id, x => x.Name);
+                      
+            var vm = new GroupViewModel
+            {
+                Name = group.Name,
+                Description = group.Description,
+                Link = group.Link,
+                CreationDate = group.CreationDate,
+                PictureUrl = group.PictureUrl,
+                Type = group.Type,
+                Privacy = group.Privacy,
+                Owner = group.Owner,
+                TypeId = group.Type.Id,
+                PrivacyId = group.Privacy.Id,
+                Id = group.Id,
+                Privacies = pList,
+                GroupTypes = _genericSelectList.CreateSelectList(groupTypes, x => x.Id, x => x.Name)
+            };
+            
+            return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, Group group)
+        public async Task<IActionResult> Edit(long id, GroupViewModel vm)
         {
-            if (id != group.Id)
+            if (id != vm.Id)
             {
                 return NotFound();
             }
@@ -200,12 +212,12 @@
 
                 try
                 {
-                    await _groupRepository.UpdateAsync(group);
+                    await _groupRepository.UpdateAsync(vm);
 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GroupExists(group.Id))
+                    if (!GroupExists(vm.Id))
                     {
                         return NotFound();
                     }
@@ -216,7 +228,7 @@
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(group);
+            return View(vm);
         }
 
         public async Task<IActionResult> MyGroups()

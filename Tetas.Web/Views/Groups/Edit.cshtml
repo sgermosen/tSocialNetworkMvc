@@ -1,13 +1,17 @@
 ﻿@model GroupViewModel
 
 @{
-    ViewData["Title"] = "Create Group";
+    ViewData["Title"] = "Edit Group";
 }
 
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Create">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Link" />
+            <input type="hidden" asp-for="CreationDate" />
+            <input type="hidden" asp-for="PictureUrl" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="TypeId" class="control-label"></label>
@@ -36,7 +40,7 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Save Creation" class="btn btn-primary" />
+                <input type="submit" value="Save Edition" class="btn btn-primary" />
                 <a asp-controller="Home" asp-action="Index" class="btn btn-warning">Cancel Creation</a>
             </div>
         </form>

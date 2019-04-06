@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace Tetas.Repositories.Contracts
 {
@@ -10,8 +11,10 @@ namespace Tetas.Repositories.Contracts
 
         IQueryable<Group> GetGroupWithPosts(string userid);
 
-         IQueryable<Group> GetGroups(string userid);
+        IQueryable<Group> GetGroups(string userid);
+
+        Task<Group> GetGroupWithPostsAndComments(long groupid);
 
     }
-     
+
 }

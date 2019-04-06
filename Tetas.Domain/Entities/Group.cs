@@ -2,7 +2,7 @@
 
 namespace Tetas.Domain.Entities
 {
-    using Domain.Helpers;
+    using Helpers;
     using System;
 
     public class Group : BaseEntity, IBaseEntity

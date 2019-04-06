@@ -74,10 +74,10 @@
 
              services.AddScoped<IPost, PostRepository>();
             services.AddScoped<IGroup, GroupRepository>();
-
+            services.AddScoped<IPsSelectList, PsSelectList>();
             #endregion
 
-          
+
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
 

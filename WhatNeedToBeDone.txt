@@ -48,6 +48,7 @@ Users
 5. User can point people.
 6. User can condecore people.
 7. Condecorations can be monetary payment.
+8. User receive notifications.
 
 Posts
 1. User can create, edit, delete their posts. 				(done)

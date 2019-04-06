@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tetas.Repositories.Implementations
@@ -17,7 +18,7 @@ namespace Tetas.Repositories.Implementations
 
         public IQueryable<Group> GetGroupWithPostsAndComments(string userid,long groupid)
         {
-            var groups = _context.Groups.Where(p=>p.Id==groupid)
+            var groups =  _context.Groups.Where(p=>p.Id==groupid)
                 .Include(p => p.Privacy).Include(t => t.Type)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpc=>gpc.GroupPostComments).ThenInclude(gpcu=>gpcu.Owner)
                 .Include(gp=>gp.GroupPosts).ThenInclude(gpu=>gpu.Owner)
@@ -58,6 +59,17 @@ namespace Tetas.Repositories.Implementations
             }
 
             return groups.AsNoTracking();
+        }
+
+        public async Task<Group> GetGroupWithPostsAndComments(long groupid)
+        {
+            var group = await _context.Groups.Where(p => p.Id == groupid)
+                .Include(p => p.Privacy).Include(t => t.Type)
+                .Include(gp => gp.GroupPosts).ThenInclude(gpc => gpc.GroupPostComments).ThenInclude(gpcu => gpcu.Owner)
+                .Include(gp => gp.GroupPosts).ThenInclude(gpu => gpu.Owner)
+                .Include(gu => gu.Owner).FirstOrDefaultAsync();
+            
+            return group;
         }
     }
 
