@@ -1,0 +1,42 @@
+﻿@model GroupPostViewModel
+
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+<hr />
+<div class="row">
+    <div class="col-md-8">
+
+        <h5> You are publishing on: @Model.Group.Name </h5>
+
+        <form asp-action="PostInGroup">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                       
+            <input type="hidden" asp-for="GroupId" />
+
+            <div class="form-group">
+                <label>Post Title</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Body" class="control-label"></label>
+                <textarea rows="3" asp-for="Body" class="form-control"></textarea>
+                <span asp-validation-for="Body" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Save Creation" class="btn btn-primary" />
+                <a asp-controller="Home" asp-action="Index" class="btn btn-warning">Cancel Creation</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

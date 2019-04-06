@@ -15,6 +15,12 @@ namespace Tetas.Repositories.Contracts
 
         Task<Group> GetGroupWithPostsAndComments(long groupid);
 
+        Task<GroupPost> AddPostAsync(GroupPost comment);
+        Task<bool> DeletePostAsync(GroupPost comment);
+        Task<bool> UpdatePostAsync(GroupPost comment);
+
+        Task<bool> PostExistAsync(long id);
+
     }
 
 }

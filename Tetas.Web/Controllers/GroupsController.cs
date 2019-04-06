@@ -34,6 +34,180 @@
             // _groupTypeRepo = new Repository<GroupType>(context);
         }
 
+       
+        #region Post
+        public async Task<IActionResult> PostInGroup(long id)
+        {
+            var group = await _groupRepository.GetByIdAsync(id);
+            if (group == null)
+            {
+                return NotFound();
+            }
+            var postComment = new GroupPostViewModel
+            {Group=group,
+                GroupId = group.Id
+            };
+            return View(postComment);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostInGroup(GroupPostViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var group = await _groupRepository.GetByIdAsync(vm.GroupId);
+                if (group == null)
+                {
+                    return NotFound();
+                }
+                var post = new GroupPost
+                {
+                    Name = vm.Name,
+                    Body = vm.Body,
+                    Group = group
+                };
+                post.Owner = user;
+                post.CreationDate = DateTime.UtcNow;
+
+                await _groupRepository.AddPostAsync(post);
+
+                return RedirectToAction(nameof(Details), new { id = group.Id });
+            }
+            return View(vm);
+        }
+
+        //public async Task<IActionResult> EditComment(long? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var comment = await _groupRepository.get(id.Value);
+
+        //    if (comment == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (comment.Owner.Email != User.Identity.Name)
+        //    {
+        //        return Unauthorized();
+        //    }
+
+        //    var postComment = new PostCommentViewModel
+        //    {
+        //        Id = comment.Id,
+        //        PostId = comment.Post.Id,
+        //        Body = comment.Body,
+        //        Name = comment.Name,
+        //        Date = comment.Date,
+        //        Owner = comment.Owner,
+        //        Post = comment.Post,
+        //        OwnerId = comment.Owner.Id
+        //    };
+        //    return View(postComment);
+
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> EditComment(long id, PostCommentViewModel vm)
+        //{
+        //    if (id != vm.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+        //        if (user == null || user.Id != vm.OwnerId)
+        //        {
+        //            return NotFound();
+        //        }
+        //        var post = await _postRepository.GetByIdAsync(vm.PostId);
+        //        if (post == null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        var comment = new PostComment
+        //        {
+        //            Id = vm.Id,
+        //            Name = vm.Name,
+        //            Body = vm.Body,
+        //            Owner = user,
+        //            Date = vm.Date,
+        //            UpdatedDate = DateTime.UtcNow,
+        //            Post = post
+        //        };
+
+        //        try
+        //        {
+        //            await _postRepository.UpdateCommentAsync(comment);
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!await PostCommentExists(comment.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
+        //    }
+        //    return View(vm);
+        //}
+
+        //public async Task<IActionResult> DeleteComment(long? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var comment = await _postRepository.GetPostCommentByIdAsync(id.Value);
+
+        //    if (comment == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    if (comment.Owner.Email != User.Identity.Name)
+        //    {
+        //        return Unauthorized();
+        //    }
+
+        //    return View(comment);
+        //}
+
+        //[HttpPost, ActionName("DeleteComment")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteCommentConfirmed(long id)
+        //{
+        //    var comment = await _postRepository.GetPostCommentByIdAsync(id);
+        //    var postId = comment.Post.Id;
+        //    await _postRepository.DeleteCommentAsync(comment);
+        //    return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
+        //}
+
+        private async Task<bool> PostExists(long id)
+        {
+            return await _groupRepository.PostExistAsync(id);
+        }
+        #endregion
+
+        
+
+        #region Group
         public async Task<IActionResult> Index()
         {
             var user = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
@@ -287,6 +461,7 @@
         private bool GroupExists(long id)
         {
             return _groupRepository.Exists(id);
-        }
+        } 
+        #endregion
     }
 }

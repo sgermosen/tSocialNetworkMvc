@@ -7,6 +7,7 @@ namespace Tetas.Repositories.Implementations
     using Domain.Entities;
     using Infraestructure;
     using Contracts;
+    using System;
 
     public class GroupRepository : Repository<Group>, IGroup
     {
@@ -70,6 +71,41 @@ namespace Tetas.Repositories.Implementations
                 .Include(gu => gu.Owner).FirstOrDefaultAsync();
             
             return group;
+        }
+
+        public async Task<GroupPost> AddPostAsync(GroupPost post)
+        {
+            _context.Add(post);
+            await _context.SaveChangesAsync();
+            return post;
+        }
+
+        public async Task<bool> DeletePostAsync(GroupPost post)
+        {
+            _context.GroupPosts.Remove(post);
+            int result = await _context.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+        public async Task<bool> UpdatePostAsync(GroupPost post)
+        {
+            _context.Update(post);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> PostExistAsync(long id)
+        {
+            return await _context.GroupPosts.AnyAsync(e => e.Id == id);
         }
     }
 

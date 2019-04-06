@@ -80,7 +80,7 @@
         @await Component.InvokeAsync("GroupMember")
         break;
     case Tetas.Web.Models.Tab.GroupPosts:
-        @await Component.InvokeAsync("GroupPost")
+        @await Component.InvokeAsync("GroupPost",new { id=Model.Id})
         break;
     default:
         break;
