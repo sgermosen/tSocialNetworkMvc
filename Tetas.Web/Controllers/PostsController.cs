@@ -35,13 +35,13 @@
             //var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value // will give the user's userId
             //var userName = User.FindFirst(ClaimTypes.Name).Value // will give the user's userName
             //var userEmail = User.FindFirst(ClaimTypes.Email).Value // will give the user's Email
-            ViewBag.Email =User.Identity.Name;
+            ViewBag.Email = User.Identity.Name;
             var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             ViewBag.MyPost = _postRepository.GetPostWithComments(user.Id);
 
             return View();
         }
-        
+
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -76,7 +76,7 @@
                     return NotFound();
                 }
                 post.Owner = user;
-                post.Date=DateTime.UtcNow;
+                post.Date = DateTime.UtcNow;
 
                 await _postRepository.AddAsync(post);
 
@@ -99,6 +99,11 @@
                 return NotFound();
             }
 
+            if (post.Owner.Email != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
+
             return View(post);
         }
 
@@ -113,7 +118,7 @@
 
             if (ModelState.IsValid)
             {
-                post.UpdatedDate=DateTime.UtcNow;
+                post.UpdatedDate = DateTime.UtcNow;
 
                 try
                 {
@@ -148,6 +153,10 @@
             if (post == null)
             {
                 return NotFound();
+            }
+            if (post.Owner.Email != User.Identity.Name)
+            {
+                return Unauthorized();
             }
 
             return View(post);

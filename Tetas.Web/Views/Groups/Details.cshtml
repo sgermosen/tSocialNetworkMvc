@@ -59,19 +59,21 @@
             <p>
                 @Model.Description
             </p>
+            @if (Model.Owner.Email == User.Identity.Name)
+            {
+                <p>
 
-            <p>
-                <a class="btn btn-warning" asp-action="Edit"
-                   asp-controller="Groups"
-                   asp-route-id="@Model.Id">
-                    Edit this Group
-                </a>
-                <a class="btn btn-danger" asp-action="Delete"
-                   asp-controller="Groups"
-                   asp-route-id="@Model.Id">
-                    Delete this Group
-                </a>
-            </p>
+                    <a class="btn btn-warning" asp-action="Edit"
+                       asp-controller="Groups"
+                       asp-route-id="@Model.Id">
+                        Edit this Group
+                    </a>
+                    <a class="btn btn-danger" asp-action="Delete"
+                       asp-controller="Groups"
+                       asp-route-id="@Model.Id">
+                        Delete this Group
+                    </a>
+                </p>}
         </div>
         break;
     case Tetas.Web.Models.Tab.GroupMembers:

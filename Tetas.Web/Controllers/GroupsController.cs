@@ -2,40 +2,36 @@
 {
     using Domain.Entities;
     using Helpers;
-    using Infraestructure;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Models;
     using Repositories.Contracts;
-    using Repositories.Implementations;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     public class GroupsController : PsBaseController
     {
         private readonly IGroup _groupRepository;
-       // private readonly IConfiguration _configuration;
-      //  private readonly IPsSelectList _psSelectList;
+        // private readonly IConfiguration _configuration;
+        //  private readonly IPsSelectList _psSelectList;
 
         //  private readonly Repository<Privacy> _privacyRepo;
         // private readonly Repository<GroupType> _groupTypeRepo;
         // private readonly ApplicationDbContext _context;
-       
+
         public GroupsController(IUserHelper userHelper,
             IConfiguration configuration,
             IPsSelectList psSelectList,
-            IGroup groupRepository) : base( userHelper, configuration, psSelectList)
+            IGroup groupRepository) : base(userHelper, configuration, psSelectList)
         {
             _groupRepository = groupRepository;
-          //  _configuration = configuration;
-           // _psSelectList = psSelectList;
-           // _genericSelectList = new GenericSelectList();
-          //  UserHelper = userHelper;
-          //  _privacyRepo = new Repository<Privacy>(context);
-          // _groupTypeRepo = new Repository<GroupType>(context);
+            //  _configuration = configuration;
+            // _psSelectList = psSelectList;
+            // _genericSelectList = new GenericSelectList();
+            //  UserHelper = userHelper;
+            //  _privacyRepo = new Repository<Privacy>(context);
+            // _groupTypeRepo = new Repository<GroupType>(context);
         }
 
         public async Task<IActionResult> Index()
@@ -60,7 +56,7 @@
                 };
             }
 
-            var group = await _groupRepository.FindByIdAsync(id.Value);
+            var group = await _groupRepository.GetGroupWithPostsAndComments(id.Value);
 
             if (group == null)
             {
@@ -70,6 +66,7 @@
             vm.Name = group.Name;
             vm.Description = group.Description;
             vm.Id = id.Value;
+            vm.Owner = group.Owner;
 
             return View(vm);
         }
@@ -100,9 +97,9 @@
 
         public async Task<IActionResult> Create()
         {
-           var groupTypes = await PsSelectList.GetListGroupTypes();
+            var groupTypes = await PsSelectList.GetListGroupTypes();
 
-           var privacies =  await PsSelectList.GetListPrivacies();
+            var privacies = await PsSelectList.GetListPrivacies();
 
             var group = new GroupViewModel
             {
@@ -129,7 +126,7 @@
 
                 await _groupRepository.AddAsync(group);
 
-                return RedirectToAction(nameof(SwitchToTabs), new { tabname="GroupPosts", group.Id});
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
             }
 
             return View(vm);
@@ -156,6 +153,7 @@
             {
                 group.Id = view.Id;
                 group.Link = view.Link;
+                group.Owner = view.Owner;
             }
 
             return group;
@@ -163,25 +161,31 @@
 
         public async Task<IActionResult> Edit(long? id)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var group =  await _groupRepository.GetGroupWithPostsAndComments(id.Value);
+            var group = await _groupRepository.GetGroupWithPostsAndComments(id.Value);
 
             if (group == null)
             {
                 return NotFound();
             }
-                        
+
+            if (group.Owner.Email != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
+
             var groupTypes = await PsSelectList.GetListGroupTypes();
 
             var privacies = await PsSelectList.GetListPrivacies();
 
 
             var pList = GenericSelectList.CreateSelectList(privacies, x => x.Id, x => x.Name);
-                      
+
             var vm = new GroupViewModel
             {
                 Name = group.Name,
@@ -198,7 +202,7 @@
                 Privacies = pList,
                 GroupTypes = GenericSelectList.CreateSelectList(groupTypes, x => x.Id, x => x.Name)
             };
-            
+
             return View(vm);
         }
 
@@ -216,7 +220,7 @@
 
                 try
                 {
-                    var user = await CurrentUser(); 
+                    var user = await CurrentUser();
                     if (user == null)
                     {
                         return NotFound();
@@ -237,7 +241,7 @@
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", vm.Id });
 
             }
             return View(vm);
@@ -248,6 +252,36 @@
             var user = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
             var myGroups = _groupRepository.GetGroupWithPosts(user.Id);
             return PartialView("_MyGroups", myGroups);
+        }
+
+        public async Task<IActionResult> Delete(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var group = await _groupRepository.FindByIdAsync(id.Value);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+            if (group.Owner.Email != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
+
+            return View(group);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(long id)
+        {
+            var group = await _groupRepository.FindByIdAsync(id);
+            await _groupRepository.DeleteAsync(group);
+            return RedirectToAction(nameof(Index));
         }
 
         private bool GroupExists(long id)
