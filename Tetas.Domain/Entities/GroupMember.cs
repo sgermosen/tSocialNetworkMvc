@@ -18,5 +18,7 @@
 
         public bool Applied { get; set; }
 
+        public MemberType MemberType { get; set; }
+
     }
 }

@@ -77,7 +77,7 @@
         </div>
         break;
     case Tetas.Web.Models.Tab.GroupMembers:
-        @await Component.InvokeAsync("GroupMember")
+        @await Component.InvokeAsync("GroupMember",new { id=Model.Id})
         break;
     case Tetas.Web.Models.Tab.GroupPosts:
         @await Component.InvokeAsync("GroupPost",new { id=Model.Id})

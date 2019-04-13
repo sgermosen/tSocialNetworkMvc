@@ -10,6 +10,7 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using Tetas.Domain.Helpers;
     using Tetas.Infraestructure;
 
     public class GroupsController : PsBaseController
@@ -245,7 +246,7 @@
                 {
                     reason = "I Want to be Joined to this group";
                 }
-
+                
                 gMember = new GroupMember
                 {
                     Name = reason,
@@ -255,6 +256,7 @@
                     Banned = false,
                     State = false,
                     Applied = true,
+                    MemberType = (MemberType)1,
                 };
 
                 await _context.GroupMembers.AddAsync(gMember);
@@ -379,6 +381,21 @@
                 var group = await MakeGroup(vm, user, true);
 
                 await _groupRepository.AddAsync(group);
+
+               var gMember = new GroupMember
+                {
+                    Name = "I am the Admin",
+                    Group = group,
+                    ApplicationDate = DateTime.UtcNow,
+                    User = user,
+                    Banned = false,
+                    State = true,
+                    Applied = true,
+                    MemberType = (MemberType)2,
+                };
+
+                await _context.GroupMembers.AddAsync(gMember);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
             }

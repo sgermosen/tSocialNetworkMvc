@@ -15,12 +15,22 @@
         {
             <div>
                 <span style="font-size: large">
-                    @Html.DisplayFor(modelItem => item.Owner.FullName)
+                    <a style="font-size: large" asp-route-id="@item.Owner.Email" asp-controller="People"
+                       asp-action="Profile">
+                        @item.Owner.FullName
+                    </a>
+
                 </span>
-                post on <span style="font-size: small"> @Html.DisplayFor(modelItem => item.Date)</span>
+                post on <span style="font-size: small">
+                    @Html.DisplayFor(modelItem => item.Date)
+                </span>
                 <br /> <br />
                 <h6>
-                    Post Title: @Html.DisplayFor(modelItem => item.Name)
+                    Post Title:
+                    <a asp-route-id="@item.Id" asp-controller="Posts"
+                       asp-action="Details">
+                        @item.Name
+                    </a>
                 </h6>
                 <pre style="color: blue">  @Html.Raw(item.Body) </pre>
 
@@ -58,31 +68,35 @@
 
                     foreach (var item2 in item.PostComments)
                     {
-            <div style="padding-left: 20px" class="rcorners2">
-                <span style="font-size: large"> @Html.DisplayFor(modelItem => item2.Owner.Name)</span>
-                comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.Date)</span>
+                        <div style="padding-left: 20px" class="rcorners2">
+                            <a style="font-size: large" asp-route-id="@item2.Owner.Email" asp-controller="People"
+                               asp-action="Profile">
+                                @item2.Owner.FullName
+                            </a>
 
-                           <p style="color: black"> Comment Title: @Html.DisplayFor(modelItem => item2.Name)</p>
-                <div class="rcorners1">
+                            comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.Date)</span>
 
-                    <p style="color: black"> @Html.Raw(item2.Body) </p>
-                </div>
-                @if (item2.Owner.Email == User.Identity.Name)
-                {
-                    <a asp-action="EditComment" asp-controller="Posts" asp-route-id="@item2.Id">
-                        <i class="far fa-comment-dots"></i>
-                        Edit this comment
-                    </a>
-                }
-                @if (item2.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
-                {
-                    <a asp-action="DeleteComment" asp-controller="Posts" asp-route-id="@item2.Id">
-                        <i class="fas fa-comment-slash"></i>
-                        Delete this comment
-                    </a>
-                }
+                            <p style="color: black"> Comment Title: @Html.DisplayFor(modelItem => item2.Name)</p>
+                            <div class="rcorners1">
 
-            </div>
+                                <p style="color: black"> @Html.Raw(item2.Body) </p>
+                            </div>
+                            @if (item2.Owner.Email == User.Identity.Name)
+                            {
+                                <a asp-action="EditComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                                    <i class="far fa-comment-dots"></i>
+                                    Edit this comment
+                                </a>
+                            }
+                            @if (item2.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
+                            {
+                                <a asp-action="DeleteComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                                    <i class="fas fa-comment-slash"></i>
+                                    Delete this comment
+                                </a>
+                            }
+
+                        </div>
 
                     }
                 }

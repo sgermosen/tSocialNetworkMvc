@@ -55,6 +55,7 @@ namespace Tetas.Repositories.Implementations
                 .Include(p => p.GroupMembers)
                 .Include(pr=>pr.Privacy)
                 .Include (o=>o.Owner)
+                .Include(t=>t.Type)
                 .Where(p => p.Deleted != true).ToListAsync();
 
             var myGroups = new List<GroupModel>();

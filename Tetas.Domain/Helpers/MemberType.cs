@@ -1,10 +1,10 @@
 ﻿namespace Tetas.Domain.Helpers
 {
-    public enum UserType
+    public enum MemberType
     {
+        Consultant,
         Admin,
         Moderator,
-        Publisher,
-        Consultant
+        Publisher       
     }
 }

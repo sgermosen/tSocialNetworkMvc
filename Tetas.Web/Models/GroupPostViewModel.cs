@@ -11,5 +11,7 @@ namespace Tetas.Web.Models
        public long GroupId { get; set; }
 
         public string OwnerId { get; set; }
+
+        public bool IsAdmin { get; set; }
     }
 }

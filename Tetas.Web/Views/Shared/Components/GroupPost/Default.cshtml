@@ -4,93 +4,111 @@
     ViewData["Title"] = "Posts";
 }
 
-  
-           
-<p>
-    <a asp-action="PostInGroup" asp-controller="Groups" asp-route-id="@ViewBag.GroupId" class="btn btn-primary">Create New Post</a>
-</p>
-<hr />
-@if (Model.Any())
+@if (!ViewBag.IsMember)
 {
-    foreach (var item in Model)
-
+    <div> You are not authorize to see this content</div>
+}
+else
+{<br />
+    <p>
+        <a asp-action="PostInGroup" asp-controller="Groups"
+           asp-route-id="@ViewBag.GroupId"
+           class="btn btn-primary">Create New Post</a>
+    </p><hr />
+    if (Model.Any())
     {
-        <div>
-            <span style="font-size: large">
-                @Html.DisplayFor(modelItem => item.Owner.FullName)
-            </span>
-            post on <span style="font-size: small"> @Html.DisplayFor(modelItem => item.CreationDate)</span>
-            <br /> <br />
-            <h6>
-                Post Title: @Html.DisplayFor(modelItem => item.Name)
-            </h6>
-            <pre style="color: blue">  @Html.Raw(item.Body) </pre>
+        foreach (var item in Model)
+
+        {
+            <div>
+                <span style="font-size: large">
+                    <a asp-route-id="@item.Owner.Email" asp-controller="People"
+                       asp-action="Profile">@item.Owner.FullName</a>
+
+                </span>
+                post on <span style="font-size: small"> @Html.DisplayFor(modelItem => item.CreationDate)</span>
+                <br /> <br />
+                <h6>
+                    Post Title:
+                    <a asp-route-id="@item.Id" asp-controller="Posts"
+                       asp-action="Details">
+                        @item.Name
+                    </a>
+                </h6>
+                <pre style="color: blue">  @Html.Raw(item.Body) </pre>
 
 
-            <a asp-action="React" asp-controller="Posts" asp-route-id="@item.Id">
-                <i class="fas fa-bolt"></i>
-                React!
-            </a>
-            <a asp-action="Comment" asp-controller="Posts" asp-route-id="@item.Id">
-                <i class="far fa-comment"></i>
-                Comment It!
-            </a>
-
-            @if (item.Owner.Email == User.Identity.Name)
-            {
-                <a asp-action="Edit" asp-controller="Posts" asp-route-id="@item.Id">
-                    <i class="far fa-edit"></i>
-                    Edit It!
+                <a asp-action="React" asp-controller="Posts" asp-route-id="@item.Id">
+                    <i class="fas fa-bolt"></i>
+                    React!
                 </a>
-                <a asp-action="Delete" asp-controller="Posts" asp-route-id="@item.Id">
-                    <i class="fas fa-slash"></i>
-                    Delete It!
+                <a asp-action="Comment" asp-controller="Posts" asp-route-id="@item.Id">
+                    <i class="far fa-comment"></i>
+                    Comment It!
                 </a>
-            }
 
-            <a asp-action="Details" asp-controller="Posts" asp-route-id="@item.Id">
-                <i class="far fa-eye"></i>
-                Details It!
-            </a>
-
-
-            <br /> <br />
-            @if (item.GroupPostComments.Any())
-            {
-
-                foreach (var item2 in item.GroupPostComments)
+                @if (item.Owner.Email == User.Identity.Name)
                 {
-                    <div style="padding-left: 20px" class="rcorners2">
-                        <span style="font-size: large"> @Html.DisplayFor(modelItem => item2.Owner.Name)</span>
-                        comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.CreationDate)</span>
-
-                        <p style="color: black"> Comment Title: @Html.DisplayFor(modelItem => item2.Name)</p>
-                        <div class="rcorners1">
-
-                            <p style="color: black"> @Html.Raw(item2.Body) </p>
-                        </div>
-                        @if (item2.Owner.Email == User.Identity.Name)
-                        {
-                            <a asp-action="EditComment" asp-controller="Posts" asp-route-id="@item2.Id">
-                                <i class="far fa-comment-dots"></i>
-                                Edit this comment
-                            </a>
-                        }
-                        @if (item2.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
-                        {
-                            <a asp-action="DeleteComment" asp-controller="Posts" asp-route-id="@item2.Id">
-                                <i class="fas fa-comment-slash"></i>
-                                Delete this comment
-                            </a>
-                        }
-
-                    </div>
-
+                    <a asp-action="Edit" asp-controller="Posts" asp-route-id="@item.Id">
+                        <i class="far fa-edit"></i>
+                        Edit It!
+                    </a>
+                    <a asp-action="Delete" asp-controller="Posts" asp-route-id="@item.Id">
+                        <i class="fas fa-slash"></i>
+                        Delete It!
+                    </a>
                 }
-            }
 
-            <hr />
-        </div>
+                <a asp-action="Details" asp-controller="Posts" asp-route-id="@item.Id">
+                    <i class="far fa-eye"></i>
+                    Details It!
+                </a>
 
+
+                <br /> <br />
+                @if (item.GroupPostComments.Any())
+                {
+
+                    foreach (var item2 in item.GroupPostComments)
+                    {
+                        <div style="padding-left: 20px" class="rcorners2">
+
+                            <a style="font-size: large" asp-route-id="@item2.Owner.Email" asp-controller="People"
+                               asp-action="Profile">
+                                @item2.Owner.FullName
+                            </a>
+
+                            comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.CreationDate)</span>
+
+                            <p style="color: black"> Comment Title: @Html.DisplayFor(modelItem => item2.Name)</p>
+                            <div class="rcorners1">
+
+                                <p style="color: black"> @Html.Raw(item2.Body) </p>
+                            </div>
+                            @if (item2.Owner.Email == User.Identity.Name)
+                            {
+                                <a asp-action="EditComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                                    <i class="far fa-comment-dots"></i>
+                                    Edit this comment
+                                </a>
+                            }
+                            @if (item2.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
+                            {
+                                <a asp-action="DeleteComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                                    <i class="fas fa-comment-slash"></i>
+                                    Delete this comment
+                                </a>
+                            }
+
+                        </div>
+
+                    }
+                }
+
+                <hr />
+            </div>
+
+        }
     }
 }
+
