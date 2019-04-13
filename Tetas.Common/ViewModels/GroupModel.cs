@@ -12,5 +12,7 @@ namespace Tetas.Common.ViewModels
         public bool Banned { get; set; }
 
         public bool Applied { get; set; }
+
+        public bool IsAdmin { get; set; }
     }
 }

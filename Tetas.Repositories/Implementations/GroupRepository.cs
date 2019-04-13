@@ -61,6 +61,7 @@ namespace Tetas.Repositories.Implementations
             var ban = false;
             var stat = false;
             var applied = false;
+            var isAdmin = false;
             GroupMember memb;
             foreach (var item in groups)
             {
@@ -72,12 +73,27 @@ namespace Tetas.Repositories.Implementations
                        .Where(p => p.Group.Id == item.Id && p.User.Id == userid)
                        .FirstOrDefault();
 
+                    if (item.Owner.Id==userid)
+                    {
+                        isAdmin = true;
+                    }
+                    else
+                    {
+                        isAdmin = false;
+                    }
                     if (memb != null)
                     {
                         ban = memb.Banned;
                         stat = memb.State;
                         applied = memb.Applied;
                     }
+                    else
+                    {
+                          ban = false;
+                          stat = false;
+                          applied = false; 
+                    }
+
                     myGroups.Add(new GroupModel
                     {
                         Id = item.Id,
@@ -90,7 +106,8 @@ namespace Tetas.Repositories.Implementations
                         Privacy = item.Privacy,
                         State = stat,
                         Banned = ban,
-                        Applied = applied
+                        Applied = applied,
+                        IsAdmin= isAdmin
                     });
                 }
 

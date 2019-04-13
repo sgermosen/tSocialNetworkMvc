@@ -238,9 +238,7 @@
             {
                 return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
             }
-
-           
-
+            
             if (gMember == null)
             {
                 if (string.IsNullOrEmpty(reason))
@@ -283,10 +281,10 @@
                 return Unauthorized();
             }
 
-            if (gMember != null && !gMember.State)
-            {
-                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
-            }
+            //if (gMember != null && !gMember.State)
+            //{
+            //    return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
+            //}
 
             if (gMember != null)
             {

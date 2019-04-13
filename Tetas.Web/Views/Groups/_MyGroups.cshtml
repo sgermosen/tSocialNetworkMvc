@@ -47,21 +47,37 @@
                             1
                         </td>
                         <td>
-                            @if (!item.Banned)
+                            @if (!item.IsAdmin)
                             {
-                                @if (!item.State)
+                                @if (!item.Banned)
                                 {
-                                    <a class="btn btn-success" asp-action="Join" asp-controller="Groups" asp-route-id="@item.Id">
-                                        Send Request to Join
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a class="btn btn-danger" asp-action="Leave" asp-controller="Groups" asp-route-id="@item.Id">
-                                        Leave the Group
-                                    </a>
+                                    @if (item.State ==false && item.Applied ==false)
+                                    {
+                                        <a class="btn btn-success" asp-action="Join" asp-controller="Groups" asp-route-id="@item.Id">
+                                            Send Request to Join
+                                        </a>
+                                    }
+                                    else if (item.Applied==true && item.State==false )
+                                    {
+                                        <a class="btn btn-danger" asp-action="Leave" asp-controller="Groups" asp-route-id="@item.Id">
+                                            Cancel the Request
+                                        </a>
+                                    }
+                                    else if( (item.Applied==true && item.State==true ))
+                                    {
+                                        <a class="btn btn-danger" asp-action="Leave" asp-controller="Groups" asp-route-id="@item.Id">
+                                            Leave the Group
+                                        </a>
+                                    }
                                 }
                             }
+                            else
+        {
+                        <div>You are the Admin</div>   
+            @*<a class="btn btn-danger" asp-action="Leave" asp-controller="Groups" asp-route-id="@item.Id">
+                Manage
+            </a>*@
+        } 
                         </td>
                     </tr>
 
