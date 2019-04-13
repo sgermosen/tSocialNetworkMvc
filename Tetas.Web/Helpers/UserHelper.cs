@@ -25,7 +25,7 @@
         //{
         // return   _userManager.GetUserAsync(User);
         //}  
-
+               
         public async Task<IdentityResult> AddUserAsync(ApplicationUser user, string password)
         {
             return await _userManager.CreateAsync(user, password);

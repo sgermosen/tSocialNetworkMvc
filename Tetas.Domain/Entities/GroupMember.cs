@@ -14,5 +14,9 @@
 
         public bool State { get; set; }
 
+        public bool Banned { get; set; }
+
+        public bool Applied { get; set; }
+
     }
 }

@@ -24,5 +24,7 @@ namespace Tetas.Domain.Entities
 
         public ICollection<GroupPost> GroupPosts { get; set; }
 
+        public ICollection<GroupMember> GroupMembers { get; set; }
+
     }
 }

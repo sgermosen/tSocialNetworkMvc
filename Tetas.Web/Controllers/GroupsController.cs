@@ -8,7 +8,9 @@
     using Models;
     using Repositories.Contracts;
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Tetas.Infraestructure;
 
     public class GroupsController : PsBaseController
     {
@@ -18,14 +20,15 @@
 
         //  private readonly Repository<Privacy> _privacyRepo;
         // private readonly Repository<GroupType> _groupTypeRepo;
-        // private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public GroupsController(IUserHelper userHelper,
             IConfiguration configuration,
             IPsSelectList psSelectList,
-            IGroup groupRepository) : base(userHelper, configuration, psSelectList)
+            IGroup groupRepository, ApplicationDbContext context) : base(userHelper, configuration, psSelectList)
         {
             _groupRepository = groupRepository;
+            _context = context;
             //  _configuration = configuration;
             // _psSelectList = psSelectList;
             // _genericSelectList = new GenericSelectList();
@@ -34,7 +37,7 @@
             // _groupTypeRepo = new Repository<GroupType>(context);
         }
 
-       
+
         #region Post
         public async Task<IActionResult> PostInGroup(long id)
         {
@@ -44,7 +47,8 @@
                 return NotFound();
             }
             var postComment = new GroupPostViewModel
-            {Group=group,
+            {
+                Group = group,
                 GroupId = group.Id
             };
             return View(postComment);
@@ -203,16 +207,94 @@
         {
             return await _groupRepository.PostExistAsync(id);
         }
-        #endregion
-
-        
+        #endregion              
 
         #region Group
         public async Task<IActionResult> Index()
         {
             var user = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
-            ViewBag.MyGroup = _groupRepository.GetGroupWithPosts(user.Id);
+            ViewBag.MyGroup = await _groupRepository.GetPublicAndMyGroupsAsync(user.Id);
             return View();
+        }
+
+        public async Task<IActionResult> Join(long id, string reason = "")
+        {
+            var group = await _context.Groups.FindAsync(id);
+            if (group == null)
+            {
+                return NotFound();
+            }
+            
+            var user = await CurrentUser();
+
+            var gMember = await _context.GroupMembers.Where(p => p.Group.Id == id && p.User.Id == user.Id).FirstOrDefaultAsync();
+
+            if (gMember != null && gMember.Banned)
+            {
+                return Unauthorized();
+            }
+
+            if (gMember != null && !gMember.State)
+            {
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
+            }
+
+           
+
+            if (gMember == null)
+            {
+                if (string.IsNullOrEmpty(reason))
+                {
+                    reason = "I Want to be Joined to this group";
+                }
+
+                gMember = new GroupMember
+                {
+                    Name = reason,
+                    Group = group,
+                    ApplicationDate = DateTime.UtcNow,
+                    User = user,
+                    Banned = false,
+                    State = false,
+                    Applied = true,
+                };
+
+                await _context.GroupMembers.AddAsync(gMember);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Leave(long id)
+        {
+            var group = await _context.Groups.FindAsync(id);
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            var user = await CurrentUser();
+
+            var gMember = await _context.GroupMembers.Where(p => p.Group.Id == id && p.User.Id == user.Id).FirstOrDefaultAsync();
+
+            if (gMember != null && gMember.Banned)
+            {
+                return Unauthorized();
+            }
+
+            if (gMember != null && !gMember.State)
+            {
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
+            }
+
+            if (gMember != null)
+            {
+                _context.GroupMembers.Remove(gMember);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Details(long? id, GroupTabViewModel vm)
@@ -424,7 +506,7 @@
         public async Task<IActionResult> MyGroups()
         {
             var user = await UserHelper.GetUserByEmailAsync(User.Identity.Name);
-            var myGroups = _groupRepository.GetGroupWithPosts(user.Id);
+            var myGroups = await _groupRepository.GetPublicAndMyGroupsAsync(user.Id);
             return PartialView("_MyGroups", myGroups);
         }
 
@@ -461,7 +543,8 @@
         private bool GroupExists(long id)
         {
             return _groupRepository.Exists(id);
-        } 
+        }
         #endregion
+
     }
 }

@@ -180,11 +180,16 @@ namespace Tetas.Web.Controllers
                         token = myToken
                     }, protocol: HttpContext.Request.Scheme);
 
-                    _mailHelper.SendMail(model.Email,
-                        "Tetas Email confirmation", $"<h1>Tetas Email confirmation</h1>" +
-                                                    $"for the activation of this account " +
-                                                    $"please click on the followed link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
-                    
+                    try
+                    {
+                        _mailHelper.SendMail(model.Email,
+                     "Tetas Email confirmation", $"<h1>Tetas Email confirmation</h1>" +
+                                                 $"for the activation of this account " +
+                                                 $"please click on the followed link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+
+                    }
+                    finally { }
+                       
                   //  ModelState.AddModelError(string.Empty, "The instructions to activate your account was send it to your Email");
 
                     return RedirectToAction("Index", "Home", new{message= "The instructions to activate your account was send it to your Email" });

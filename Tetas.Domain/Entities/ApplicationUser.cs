@@ -1,6 +1,7 @@
 ﻿namespace Tetas.Domain.Entities
 {
     using Microsoft.AspNetCore.Identity;
+    using System.Collections.Generic;
 
     public class ApplicationUser : IdentityUser
     {
@@ -26,6 +27,8 @@
         public string FullName => $"{Name} {Lastname}";
 
         //public UserType UserType { get; set; }
+
+        public ICollection<GroupMember> GroupMembers { get; set; }
 
     }
 }

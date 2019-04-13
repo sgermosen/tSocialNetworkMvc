@@ -1,54 +1,72 @@
-﻿@model IEnumerable<Tetas.Domain.Entities.Group>
+﻿@model IEnumerable<Tetas.Common.ViewModels.GroupModel>
 
 
-<div >
+<div>
     <p>
         <a asp-action="Create" asp-controller="Groups" class="btn btn-primary">Create New Group</a>
     </p>
     <table class="table table-bordered">
         <thead>
-        <tr>
-            <th>
-                Group Type
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-                Members
-            </th>
+            <tr>
+                <th>
+                    Group Type
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Members
+                </th>
+                <th></th>
 
-        </tr>
+            </tr>
         </thead>
         <tbody>
-        @if (Model.Any())
-        {
-            foreach (var item in Model)
+            @if (Model.Any())
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Type.Name)
-                    </td>
-                    <td>
-                        <a asp-action="Details"
-                           asp-controller="Groups"
-                           asp-route-id="@item.Id">
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </a>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        1
-                    </td>
-                </tr>
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type.Name)
+                        </td>
+                        <td>
+                            <a asp-action="Details"
+                               asp-controller="Groups"
+                               asp-route-id="@item.Id">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            @if (!item.Banned)
+                            {
+                                @if (!item.State)
+                                {
+                                    <a class="btn btn-success" asp-action="Join" asp-controller="Groups" asp-route-id="@item.Id">
+                                        Send Request to Join
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-danger" asp-action="Leave" asp-controller="Groups" asp-route-id="@item.Id">
+                                        Leave the Group
+                                    </a>
+                                }
+                            }
+                        </td>
+                    </tr>
 
+                }
             }
-        }
         </tbody>
     </table>
 </div>

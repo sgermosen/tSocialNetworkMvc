@@ -2,7 +2,9 @@
 {
     public enum UserType
     {
-        Teacher,
-        Student
+        Admin,
+        Moderator,
+        Publisher,
+        Consultant
     }
 }

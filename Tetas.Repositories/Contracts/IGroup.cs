@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 namespace Tetas.Repositories.Contracts
 {
     using Domain.Entities;
+    using System.Collections.Generic;
+    using Tetas.Common.ViewModels;
 
     public interface IGroup : IRepository<Group>
     {
@@ -12,6 +14,8 @@ namespace Tetas.Repositories.Contracts
         IQueryable<Group> GetGroupWithPosts(string userid);
 
         IQueryable<Group> GetGroups(string userid);
+
+        Task<ICollection<GroupModel>> GetPublicAndMyGroupsAsync(string userid);
 
         Task<Group> GetGroupWithPostsAndComments(long groupid);
 

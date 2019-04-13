@@ -7,16 +7,21 @@ namespace Tetas.Web.Controllers
     using Repositories.Contracts;
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading.Tasks;
+    using Tetas.Web.Helpers;
 
     public class HomeController : Controller
     {
         private readonly IPost _postRepository;
         private readonly IGroup _groupRepository;
+        private readonly IUserHelper userHelper;
 
-        public HomeController(IPost postRepository,IGroup groupRepository)
+        public HomeController(IPost postRepository,IGroup groupRepository, 
+            IUserHelper userHelper)
         {
             _postRepository = postRepository;
             _groupRepository = groupRepository;
+            this.userHelper = userHelper;
         }
 
         public IActionResult Index(string message)
@@ -51,9 +56,13 @@ namespace Tetas.Web.Controllers
 
         public ActionResult GroupsFilter()
         {
-            var model =   _groupRepository.GetGroups("");
+            //var user = Task.Run(userHelper.GetUserByEmailAsync(User.Identity.Name));
 
-            model = model.OrderByDescending(p => p.CreationDate).Take(10);
+            var model =   _groupRepository.GetPublicAndMyGroupsAsync("af581e6a-e402-4b6e-b03a-69220e2c1e2e");
+            //model = model.OrderByDescending(p => p.CreationDate);
+
+
+            //model = model.Take(10);
 
             return PartialView("_GroupsPartial",  model);
         }

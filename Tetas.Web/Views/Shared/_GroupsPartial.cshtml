@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Tetas.Domain.Entities.Group>
+﻿@model IEnumerable<Tetas.Common.ViewModels.GroupModel>
 
 
 <div id="groupsContent">
@@ -19,6 +19,9 @@
                 </th>
                 <th>
                     Members
+                </th>
+                <th>
+
                 </th>
 
             </tr>
@@ -45,8 +48,20 @@
                         <td>
                             1
                         </td>
+                        <td>
+                            @if (!item.Banned)
+                            {
+                                @if (!item.State)
+                                {
+                                    <a class="btn btn-success"> Send Request to Join </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-danger"> Leave the Group </a>
+                                }
+                            }
+                        </td>
                     </tr>
-
                 }
             }
         </tbody>

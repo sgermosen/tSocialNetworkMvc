@@ -9,4 +9,8 @@
     <Folder Include="MyExtensions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tetas.Domain\Tetas.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
