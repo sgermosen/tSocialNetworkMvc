@@ -28,7 +28,13 @@ If you want to see the introduction of a mini-course that I prepared, check this
  Please, feel free to pull a Request, and colaborate with it, I promese check all the request, test it, and add it.
  
  
- 
+ # Captures
+ ![Screenshot](1Login.png)
+  ![Screenshot](2Register.png)
+   ![Screenshot](3Groups.png)
+    ![Screenshot](4GroupMembers.png)
+     ![Screenshot](5Profile.png)
+      ![Screenshot](6Post.png)
 
 
 # Getting Started
