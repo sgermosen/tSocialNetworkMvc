@@ -1,21 +1,17 @@
-﻿@model PostCommentViewModel
+﻿@model GroupPostCommentViewModel
 
 @{
-    ViewData["Title"] = "Edit Comment";
+    ViewData["Title"] = "Create Comment";
 }
-
+ 
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="EditComment">
+        <form asp-action="Comment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input type="hidden" asp-for="Post" />
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="Date" />
-            <input type="hidden" asp-for="Owner" />
             <input type="hidden" asp-for="PostId" />
-            <input type="hidden" asp-for="OwnerId" />
+            <input type="hidden" asp-for="GroupId" />
 
             <div class="form-group">
                 <label>Comment Title</label>
@@ -29,10 +25,9 @@
             </div>
 
 
-
             <div class="form-group">
-                <input type="submit" value="Save Edition" class="btn btn-primary" />
-                <a  asp-action="Index" class="btn btn-warning">Cancel Edition</a>
+                <input type="submit" value="Save Creation" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-warning">Cancel Creation</a>
             </div>
         </form>
     </div>

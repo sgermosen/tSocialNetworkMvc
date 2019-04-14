@@ -1,8 +1,7 @@
-﻿using System.Linq;
-
-namespace Tetas.Repositories.Contracts
+﻿namespace Tetas.Repositories.Contracts
 {
     using Domain.Entities;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public interface IPost : IRepository<Post>
@@ -14,11 +13,13 @@ namespace Tetas.Repositories.Contracts
         Task<PostComment> GetPostCommentByIdAsync(long id);
 
         Task<PostComment> AddCommentAsync(PostComment comment);
+
         Task<bool> DeleteCommentAsync(PostComment comment);
+
         Task<bool> UpdateCommentAsync(PostComment comment);
 
         Task<bool> CommentExistAsync(long id);
 
     }
-     
+
 }

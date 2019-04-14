@@ -1,13 +1,12 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
-
-namespace Tetas.Repositories.Implementations
+﻿namespace Tetas.Repositories.Implementations
 {
+    using Contracts;
     using Domain.Entities;
     using Infraestructure;
-    using Contracts;
-    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
     using System;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class PostRepository : Repository<Post>, IPost
     {
@@ -35,12 +34,12 @@ namespace Tetas.Repositories.Implementations
         {
             return await _context.Posts
                 .Include(p => p.PostComments).ThenInclude(u => u.Owner)
-                .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();           
+                .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();
         }
 
         public async Task<PostComment> GetPostCommentByIdAsync(long id)
         {
-            return await _context.PostComments.Include(p=>p.Post).ThenInclude(pu=>pu.Owner)
+            return await _context.PostComments.Include(p => p.Post).ThenInclude(pu => pu.Owner)
                 .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();
         }
 

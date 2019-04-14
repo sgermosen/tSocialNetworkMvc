@@ -4,10 +4,10 @@
     using Helpers;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Models;
     using Repositories.Contracts;
     using System;
     using System.Threading.Tasks;
-    using Tetas.Web.Models;
 
     public class PostsController : Controller
     {
@@ -131,7 +131,7 @@
                     Name = vm.Name,
                     Body = vm.Body,
                     Owner = user,
-                    Date=vm.Date,
+                    Date = vm.Date,
                     UpdatedDate = DateTime.UtcNow,
                     Post = post
                 };

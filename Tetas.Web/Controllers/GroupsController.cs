@@ -38,10 +38,202 @@
             // _groupTypeRepo = new Repository<GroupType>(context);
         }
 
+        private async Task<bool> CanPostOrComment(long groupId)
+        {
+            var user = await CurrentUser();
+
+            var gMember = await _context.GroupMembers.
+                Where(p => p.Group.Id == groupId
+                && p.User == user
+                && !p.Banned
+                && p.State)
+                .FirstOrDefaultAsync();
+
+            if (gMember == null)
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+        #region PostComments
+
+        public async Task<IActionResult> Comment(long id, long groupId)
+        {
+
+            if (!await CanPostOrComment(groupId))
+            {
+                return Unauthorized();
+            }
+
+            var postComment = new GroupPostCommentViewModel
+            {
+                PostId = id,
+                GroupId = groupId
+            };
+
+            return View(postComment);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Comment(GroupPostCommentViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await CurrentUser();
+
+                var post = await _groupRepository.GetPostByIdAsync(vm.PostId);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                var comment = new GroupPostComment
+                {
+                    Name = vm.Name,
+                    Body = vm.Body,
+                    Post = post,
+                    Owner = user,
+                    CreationDate = DateTime.UtcNow
+                };
+
+                await _groupRepository.AddCommentAsync(comment);
+
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", id = vm.GroupId });
+            }
+            return View(vm);
+        }
+
+        public async Task<IActionResult> EditComment(long? id, long groupId)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await _groupRepository.GetPostCommentByIdAsync(id.Value);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            if (comment.Owner.Email != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
+
+            var postComment = new GroupPostCommentViewModel
+            {
+                GroupId = groupId,
+                Id = comment.Id,
+                PostId = comment.Post.Id,
+                Body = comment.Body,
+                Name = comment.Name,
+                CreationDate = comment.CreationDate,
+                Owner = comment.Owner,
+                Post = comment.Post,
+                OwnerId = comment.Owner.Id
+            };
+            return View(postComment);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditComment(long id, GroupPostCommentViewModel vm)
+        {
+            if (id != vm.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = await CurrentUser();
+                if (user == null || user.Id != vm.OwnerId)
+                {
+                    return NotFound();
+                }
+                //var post = await _groupRepository.GetPostByIdAsync(vm.PostId);
+                //if (post == null)
+                //{
+                //    return NotFound();
+                //}
+
+                var comment = await _groupRepository.GetPostCommentByIdAsync(vm.Id);
+
+                comment.Name = vm.Name;
+                comment.Body = vm.Body;
+                comment.UpdatedDate = DateTime.UtcNow;
+
+                try
+                {
+                    await _groupRepository.UpdateCommentAsync(comment);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await PostCommentExists(comment.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", id = vm.GroupId });
+
+            }
+            return View(vm);
+        }
+
+        public async Task<IActionResult> DeleteComment(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await _groupRepository.GetPostCommentByIdAsync(id.Value);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+            if (comment.Owner.Email != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
+
+            return View(comment);
+        }
+
+        [HttpPost, ActionName("DeleteComment")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCommentConfirmed(long id)
+        {
+            var comment = await _groupRepository.GetPostCommentByIdAsync(id);
+            var postId = comment.Post.Id;
+            await _groupRepository.DeleteCommentAsync(comment);
+            return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
+        }
+
+        private async Task<bool> PostCommentExists(long id)
+        {
+            return await _groupRepository.CommentExistAsync(id);
+        }
+        #endregion
 
         #region Post
         public async Task<IActionResult> PostInGroup(long id)
         {
+            if (!await CanPostOrComment(id))
+            {
+                return Unauthorized();
+            }
+
             var group = await _groupRepository.GetByIdAsync(id);
             if (group == null)
             {
@@ -82,7 +274,8 @@
 
                 await _groupRepository.AddPostAsync(post);
 
-                return RedirectToAction(nameof(Details), new { id = group.Id });
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
+
             }
             return View(vm);
         }
@@ -137,7 +330,7 @@
         //        {
         //            return NotFound();
         //        }
-        //        var post = await _postRepository.GetByIdAsync(vm.PostId);
+        //        var post = await _groupRepository.GetByIdAsync(vm.PostId);
         //        if (post == null)
         //        {
         //            return NotFound();
@@ -155,7 +348,7 @@
 
         //        try
         //        {
-        //            await _postRepository.UpdateCommentAsync(comment);
+        //            await _groupRepository.UpdateCommentAsync(comment);
         //        }
         //        catch (DbUpdateConcurrencyException)
         //        {
@@ -180,7 +373,7 @@
         //        return NotFound();
         //    }
 
-        //    var comment = await _postRepository.GetPostCommentByIdAsync(id.Value);
+        //    var comment = await _groupRepository.GetPostCommentByIdAsync(id.Value);
 
         //    if (comment == null)
         //    {
@@ -198,9 +391,9 @@
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> DeleteCommentConfirmed(long id)
         //{
-        //    var comment = await _postRepository.GetPostCommentByIdAsync(id);
+        //    var comment = await _groupRepository.GetPostCommentByIdAsync(id);
         //    var postId = comment.Post.Id;
-        //    await _postRepository.DeleteCommentAsync(comment);
+        //    await _groupRepository.DeleteCommentAsync(comment);
         //    return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
         //}
 
@@ -220,7 +413,7 @@
 
         public async Task<IActionResult> Aprove(long id)
         {
-            
+
             var gMember = await _context.GroupMembers.Include(g => g.Group)
                 .Include(u => u.User)
                 .Where(p => p.Id == id).FirstOrDefaultAsync();
@@ -232,9 +425,9 @@
 
             var user = await CurrentUser();
 
-            if (!_context.GroupMembers.Any(  p=> p.Group.Id == gMember.Group.Id && 
-                                            p.User.Id == user.Id && 
-                                            ((int)p.MemberType==2 || (int)p.MemberType == 3)))
+            if (!_context.GroupMembers.Any(p => p.Group.Id == gMember.Group.Id &&
+                                          p.User.Id == user.Id &&
+                                          ((int)p.MemberType == 2 || (int)p.MemberType == 3)))
             {
                 return Unauthorized();
             }
@@ -281,12 +474,12 @@
             {
                 return Unauthorized();
             }
-           
+
             gMember.Banned = true;
 
             _context.Update(gMember);
             await _context.SaveChangesAsync();
-            
+
             return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupMember", gMember.Group.Id });
         }
 
@@ -309,7 +502,7 @@
             {
                 return Unauthorized();
             }
-           
+
             gMember.Banned = false;
 
             _context.Update(gMember);
@@ -343,7 +536,7 @@
             {
                 return Unauthorized();
             }
-            
+
             gMember.State = true;
 
             _context.Remove(gMember);
@@ -479,7 +672,7 @@
                     vm.ActiveTab = Tab.GroupPosts;
                     break;
                 default:
-                    vm.ActiveTab = Tab.Info;
+                    vm.ActiveTab = Tab.GroupPosts;
                     break;
             }
             return RedirectToAction("Details", vm);

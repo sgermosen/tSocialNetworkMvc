@@ -50,6 +50,12 @@
 </ul>
 @switch (Model.ActiveTab)
 {
+    case Tetas.Web.Models.Tab.GroupPosts:
+        @await Component.InvokeAsync("GroupPost", new { id = Model.Id })
+        break;
+    case Tetas.Web.Models.Tab.GroupMembers:
+        @await Component.InvokeAsync("GroupMember", new { id = Model.Id })
+        break;
     case Tetas.Web.Models.Tab.Info:
         <div>
             The info of this group.
@@ -76,12 +82,7 @@
                 </p>}
         </div>
         break;
-    case Tetas.Web.Models.Tab.GroupMembers:
-        @await Component.InvokeAsync("GroupMember",new { id=Model.Id})
-        break;
-    case Tetas.Web.Models.Tab.GroupPosts:
-        @await Component.InvokeAsync("GroupPost",new { id=Model.Id})
-        break;
+
     default:
         break;
 }

@@ -1,19 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Tetas.Repositories.Implementations
+﻿namespace Tetas.Repositories.Implementations
 {
     using Contracts;
     using Domain.Entities;
     using Infraestructure;
+    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Tetas.Common.ViewModels;
 
     public class GroupRepository : Repository<Group>, IGroup
     {
         private readonly ApplicationDbContext _context;
+
         public GroupRepository(ApplicationDbContext context) : base(context)//, IUserHelper userHelper) : base(context)
         {
             _context = context;
@@ -53,9 +53,9 @@ namespace Tetas.Repositories.Implementations
         {
             var groups = await _context.Groups
                 .Include(p => p.GroupMembers)
-                .Include(pr=>pr.Privacy)
-                .Include (o=>o.Owner)
-                .Include(t=>t.Type)
+                .Include(pr => pr.Privacy)
+                .Include(o => o.Owner)
+                .Include(t => t.Type)
                 .Where(p => p.Deleted != true).ToListAsync();
 
             var myGroups = new List<GroupModel>();
@@ -74,7 +74,7 @@ namespace Tetas.Repositories.Implementations
                        .Where(p => p.Group.Id == item.Id && p.User.Id == userid)
                        .FirstOrDefault();
 
-                    if (item.Owner.Id==userid)
+                    if (item.Owner.Id == userid)
                     {
                         isAdmin = true;
                     }
@@ -90,9 +90,9 @@ namespace Tetas.Repositories.Implementations
                     }
                     else
                     {
-                          ban = false;
-                          stat = false;
-                          applied = false; 
+                        ban = false;
+                        stat = false;
+                        applied = false;
                     }
 
                     myGroups.Add(new GroupModel
@@ -108,7 +108,7 @@ namespace Tetas.Repositories.Implementations
                         State = stat,
                         Banned = ban,
                         Applied = applied,
-                        IsAdmin= isAdmin
+                        IsAdmin = isAdmin
                     });
                 }
 
@@ -193,6 +193,55 @@ namespace Tetas.Repositories.Implementations
         public async Task<bool> PostExistAsync(long id)
         {
             return await _context.GroupPosts.AnyAsync(e => e.Id == id);
+        }
+
+        public async Task<GroupPost> GetPostByIdAsync(long id)
+        {
+            return await _context.GroupPosts.Include(p=>p.Group)
+                .Include(p => p.GroupPostComments).ThenInclude(u => u.Owner)
+                .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();
+        }
+
+        public async Task<GroupPostComment> GetPostCommentByIdAsync(long id)
+        {
+            return await _context.GroupPostComments.Include(p => p.Post).ThenInclude(pu => pu.Owner)
+                .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();
+        }
+
+        public async Task<GroupPostComment> AddCommentAsync(GroupPostComment comment)
+        {
+            _context.Add(comment);
+            await _context.SaveChangesAsync();
+            return comment;
+        }
+
+        public async Task<bool> DeleteCommentAsync(GroupPostComment comment)
+        {
+            _context.GroupPostComments.Remove(comment);
+            int result = await _context.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+        public async Task<bool> UpdateCommentAsync(GroupPostComment comment)
+        {
+            _context.Update(comment);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> CommentExistAsync(long id)
+        {
+            return await _context.GroupPostComments.AnyAsync(e => e.Id == id);
         }
     }
 
