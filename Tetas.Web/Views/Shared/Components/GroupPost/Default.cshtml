@@ -23,7 +23,7 @@ else
 <div>
     <div style="padding-left: 20px" class="rcorners4">
         <span style="font-size: large">
-            <a asp-route-id="@item.Owner.Email" asp-controller="People"
+            <a asp-route-id="@item.Owner.Email" asp-controller="Account"
                asp-action="Profile">@item.Owner.FullName</a>
         </span>
         post on <span style="font-size: small"> @Html.DisplayFor(modelItem => item.CreationDate)</span>
@@ -78,7 +78,7 @@ else
             {
                 <div style="padding-left: 75px" >
                     <div class="rcorners2">
-                        <a style="font-size: large" asp-route-id="@item2.Owner.Email" asp-controller="People"
+                        <a style="font-size: large" asp-route-id="@item2.Owner.Email" asp-controller="Account"
                            asp-action="Profile">
                             @item2.Owner.FullName
                         </a>

@@ -68,7 +68,6 @@
             @if (Model.Owner.Email == User.Identity.Name)
             {
                 <p>
-
                     <a class="btn btn-warning" asp-action="Edit"
                        asp-controller="Groups"
                        asp-route-id="@Model.Id">
@@ -79,7 +78,8 @@
                        asp-route-id="@Model.Id">
                         Delete this Group
                     </a>
-                </p>}
+                </p>
+            }
         </div>
         break;
 

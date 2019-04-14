@@ -1,0 +1,60 @@
+﻿@model Tetas.Common.ViewModels.ProfileModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+<hr />
+@if (Model.IsMe)
+{
+    <p>
+        <a class="btn btn-warning" asp-action="EditProfile">
+            Edit My Profile
+        </a>
+    </p>
+}
+
+<div style="font-size:x-large">
+    <div class="row">
+        <div class="col-md-2">
+            Name
+        </div>
+        <div class="col-md-5">
+            @Model.FullName
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            Email
+        </div>
+        <div class="col-md-5">
+            @Model.Email
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            Phone
+        </div>
+        <div class="col-md-5">
+            @Model.Phone
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            Mini Bio About Me
+        </div>
+        <div class="col-md-5">
+            <p>
+                @Html.Raw(@Model.Bio)
+            </p>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+

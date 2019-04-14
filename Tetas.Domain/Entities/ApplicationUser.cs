@@ -21,10 +21,26 @@
 
         public string Lastname { get; set; }
 
+        public string NickName { get; set; }
+        
         //[DataType(DataType.ImageUrl)]
         public string PictureUrl { get; set; }
 
-        public string FullName => $"{Name} {Lastname}";
+        public string Bio { get; set; }
+
+        public string FullName
+        {
+            get {
+                var ret = $"{Name} {Lastname}";
+                if (!string.IsNullOrEmpty(NickName))
+                {
+                    ret = $"{ret} ({NickName})";
+                }
+                return ret;
+            }
+        }
+
+        //public string FullName => $"{Name} {Lastname} ({NickName})";
 
         //public UserType UserType { get; set; }
 

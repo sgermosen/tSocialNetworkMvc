@@ -64,7 +64,7 @@ Post Comments
 
 Groups
 1. User can create, edit, delete their groups.				edit,create
-2. User can create, edit, delete post on groups.			create, edit
+2. User can create, edit, delete post on groups.			create,edit
 3. User can create, edit, delete comment on groups.			create,edit
 4. User can ask for join to a groups.					(done)
 5. Group owner can acept, reject, ban or disban users 			(done)
@@ -75,7 +75,7 @@ Groups
 10. Groups can show the members quantity.
 11. Post can be mark as principal (important) on groups.
 12. Group posts can be see just by member				(done)
-13. Group members can be see just by member
+13. Group members can be see just by member				(done)
 14. Group owner and moderator can fire a member from group		(done)
 
 Quizz

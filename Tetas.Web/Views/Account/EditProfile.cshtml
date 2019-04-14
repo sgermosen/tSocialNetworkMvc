@@ -1,0 +1,58 @@
+﻿@model Tetas.Common.ViewModels.ProfileModel
+
+@{
+    ViewData["Title"] = "Edit My Profile";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="Name">First Name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-warning"></span>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="Lastname">Last Name</label>
+                <input asp-for="Lastname" class="form-control" />
+                <span asp-validation-for="Lastname" class="text-warning"></span>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="NickName">Nick Name</label>
+                <input asp-for="NickName" class="form-control" />
+                <span asp-validation-for="NickName" class="text-warning"></span>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="Phone">Phone</label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-warning"></span>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label asp-for="Bio">Mini Bio About Me</label> 
+                <textarea rows="3" asp-for="Bio" class="form-control"></textarea>
+                <span asp-validation-for="Bio" class="text-warning"></span>
+            </div>
+
+            <br /><br />
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-success" />
+                <a class="btn btn-warning" asp-action="Profile"
+                   asp-route-id="@Model.Email">Cancel Changes</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

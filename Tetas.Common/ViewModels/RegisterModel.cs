@@ -13,6 +13,10 @@
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        public string NickName { get; set; }
+
+        public string Phone { get; set; }
+
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }

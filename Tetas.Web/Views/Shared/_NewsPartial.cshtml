@@ -15,7 +15,7 @@
         {
             <div>
                 <span style="font-size: large">
-                    <a style="font-size: large" asp-route-id="@item.Owner.Email" asp-controller="People"
+                    <a style="font-size: large" asp-route-id="@item.Owner.Email" asp-controller="Account"
                        asp-action="Profile">
                         @item.Owner.FullName
                     </a>
@@ -69,7 +69,7 @@
                     foreach (var item2 in item.PostComments)
                     {
                         <div style="padding-left: 20px" class="rcorners2">
-                            <a style="font-size: large" asp-route-id="@item2.Owner.Email" asp-controller="People"
+                            <a style="font-size: large" asp-route-id="@item2.Owner.Email" asp-controller="Account"
                                asp-action="Profile">
                                 @item2.Owner.FullName
                             </a>

@@ -22,6 +22,18 @@
             </div>
 
             <div class="form-group col-md-4">
+                <label asp-for="NickName">Nick Name</label>
+                <input asp-for="NickName" class="form-control" />
+                <span asp-validation-for="NickName" class="text-warning"></span>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="Phone">Phone</label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-warning"></span>
+            </div>
+
+            <div class="form-group col-md-4">
                 <label asp-for="Email">Email</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-warning"></span>
@@ -38,27 +50,27 @@
                 <input asp-for="Confirm" type="password" class="form-control" />
                 <span asp-validation-for="Confirm" class="text-warning"></span>
             </div>
-            <br/><br/>
+            <br /><br />
             <div class="form-group">
                 <input type="submit" value="Register as New User" class="btn btn-success" />
                 Or
                 <input type="submit" value="Register With GitHub" class="btn btn-secondary" />
                 <input type="submit" value="Register With Outlook" class="btn btn-primary" />
                 <input type="submit" value="Register With Gmail" class="btn btn-danger" />
- 
+
             </div>
             <p>
-                By clicking on "Register", you accept our Conditions, 
-                the Data Policy and the Cookies Policy. 
+                By clicking on "Register", you accept our Conditions,
+                the Data Policy and the Cookies Policy.
                 We may send you notifications by Email,
-                which you can deactivate whenever you want. 
+                which you can deactivate whenever you want.
             </p>
             <p>
                 <a asp-area=""
                    asp-controller="Account"
                    asp-action="Login"
                    class="list-group-item list-group-item-action bg-light">You all ready have an Account? Login/Connect</a>
-        
+
                 @*<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>*@
             </p>
         </form>

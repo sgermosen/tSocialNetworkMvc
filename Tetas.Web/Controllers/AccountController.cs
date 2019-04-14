@@ -7,13 +7,14 @@ namespace Tetas.Web.Controllers
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
     public class AccountController : Controller
     {
-        private readonly IUserHelper _userHelper; 
+        private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
         //private readonly ICountryRepository countryRepository;
         private readonly IConfiguration _configuration;
@@ -144,7 +145,9 @@ namespace Tetas.Web.Controllers
                         Name = model.FirstName,
                         Lastname = model.LastName,
                         Email = model.Email,
-                        UserName = model.Email
+                        UserName = model.Email,
+                        NickName = model.NickName,
+                        PhoneNumber = model.Phone
                     };
 
                     //var result = await userManager.CreateAsync(user, model.Password);
@@ -189,11 +192,11 @@ namespace Tetas.Web.Controllers
 
                     }
                     finally { }
-                       
-                  //  ModelState.AddModelError(string.Empty, "The instructions to activate your account was send it to your Email");
 
-                    return RedirectToAction("Index", "Home", new{message= "The instructions to activate your account was send it to your Email" });
-                  //  return View(model);
+                    //  ModelState.AddModelError(string.Empty, "The instructions to activate your account was send it to your Email");
+
+                    return RedirectToAction("Index", "Home", new { message = "The instructions to activate your account was send it to your Email" });
+                    //  return View(model);
                 }
 
                 ModelState.AddModelError(string.Empty, "The username is already registered.");
@@ -201,6 +204,7 @@ namespace Tetas.Web.Controllers
 
             return View(model);
         }
+
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
@@ -223,7 +227,94 @@ namespace Tetas.Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Profile(string id = "") //this id is the email
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                id = User.Identity.Name;
+            }
+            var user = await _userHelper.GetUserByEmailAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
+            var profile = new ProfileModel
+            {
+                Name = user.Name,
+                Lastname = user.Lastname,
+                NickName = user.NickName,
+                Phone = user.PhoneNumber,
+                PictureUrl = user.PictureUrl,
+                Email = user.Email,
+                Bio = user.Bio.Replace(Environment.NewLine, "<br />")
+            };
+
+            if (User.Identity.Name == id)
+            {
+                profile.IsMe = true;
+            }
+
+            return View(profile);
+        }
+
+        public async Task<IActionResult> EditProfile()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var profile = new ProfileModel
+            {
+                Name = user.Name,
+                Lastname = user.Lastname,
+                NickName = user.NickName,
+                Phone = user.PhoneNumber,
+                PictureUrl = user.PictureUrl,
+                Bio = user.Bio
+            };
+
+            return View(profile);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(ProfileModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // var user = await userManager.FindByEmailAsync(model.Email);
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+
+                if (user != null)
+                {
+                    user.Name = model.Name;
+                    user.Lastname = model.Lastname;
+                    user.NickName = model.NickName;
+                    user.PhoneNumber = model.Phone;
+                    user.Bio = model.Bio;
+
+                    var result = await _userHelper.UpdateUserAsync(user);
+                    if (result != IdentityResult.Success)
+                    {
+                        ModelState.AddModelError(string.Empty, "The user couldn't be undated.");
+                        return View(model);
+                    }
+
+                    ModelState.AddModelError(string.Empty, "Changes Saved");
+                    return RedirectToAction("Profile", new { id = user.Email });
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+
+            }
+
+            return View(model);
+        }
 
     }
 }
