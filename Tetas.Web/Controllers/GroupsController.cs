@@ -280,122 +280,85 @@
             return View(vm);
         }
 
-        //public async Task<IActionResult> EditComment(long? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> EditPost(long? id, long groupId)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var comment = await _groupRepository.get(id.Value);
+            var post = await _groupRepository.GetPostByIdAsync(id.Value);
 
-        //    if (comment == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (post == null)
+            {
+                return NotFound();
+            }
 
-        //    if (comment.Owner.Email != User.Identity.Name)
-        //    {
-        //        return Unauthorized();
-        //    }
+            if (post.Owner.Email != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
 
-        //    var postComment = new PostCommentViewModel
-        //    {
-        //        Id = comment.Id,
-        //        PostId = comment.Post.Id,
-        //        Body = comment.Body,
-        //        Name = comment.Name,
-        //        Date = comment.Date,
-        //        Owner = comment.Owner,
-        //        Post = comment.Post,
-        //        OwnerId = comment.Owner.Id
-        //    };
-        //    return View(postComment);
+            var vm = new GroupPostViewModel
+            {
+                GroupId = groupId,
+                Id = post.Id,
+                Body = post.Body,
+                Name = post.Name,
+                CreationDate = post.CreationDate,
+                Owner = post.Owner,
+                OwnerId = post.Owner.Id
+            };
+            return View(vm);
 
-        //}
+        }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditComment(long id, PostCommentViewModel vm)
-        //{
-        //    if (id != vm.Id)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPost(long id, GroupPostViewModel vm)
+        {
+            if (id != vm.Id)
+            {
+                return NotFound();
+            }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-        //        if (user == null || user.Id != vm.OwnerId)
-        //        {
-        //            return NotFound();
-        //        }
-        //        var post = await _groupRepository.GetByIdAsync(vm.PostId);
-        //        if (post == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        var comment = new PostComment
-        //        {
-        //            Id = vm.Id,
-        //            Name = vm.Name,
-        //            Body = vm.Body,
-        //            Owner = user,
-        //            Date = vm.Date,
-        //            UpdatedDate = DateTime.UtcNow,
-        //            Post = post
-        //        };
+            if (ModelState.IsValid)
+            {
+                var user = await CurrentUser();
+                if (user == null || user.Id != vm.OwnerId)
+                {
+                    return NotFound();
+                }
+                var post = await _groupRepository.GetPostByIdAsync(vm.Id);
+                if (post == null)
+                {
+                    return NotFound();
+                }
 
-        //        try
-        //        {
-        //            await _groupRepository.UpdateCommentAsync(comment);
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!await PostCommentExists(comment.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
-        //    }
-        //    return View(vm);
-        //}
+                post.Name = vm.Name;
+                post.Body = vm.Body;
+                post.UpdatedDate = DateTime.UtcNow;
 
-        //public async Task<IActionResult> DeleteComment(long? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+                try
+                {
+                    await _groupRepository.UpdatePostAsync(post);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await PostCommentExists(post.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", id = vm.GroupId });
 
-        //    var comment = await _groupRepository.GetPostCommentByIdAsync(id.Value);
-
-        //    if (comment == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    if (comment.Owner.Email != User.Identity.Name)
-        //    {
-        //        return Unauthorized();
-        //    }
-
-        //    return View(comment);
-        //}
-
-        //[HttpPost, ActionName("DeleteComment")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteCommentConfirmed(long id)
-        //{
-        //    var comment = await _groupRepository.GetPostCommentByIdAsync(id);
-        //    var postId = comment.Post.Id;
-        //    await _groupRepository.DeleteCommentAsync(comment);
-        //    return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
-        //}
+            }
+            return View(vm);
+        }
 
         private async Task<bool> PostExists(long id)
         {

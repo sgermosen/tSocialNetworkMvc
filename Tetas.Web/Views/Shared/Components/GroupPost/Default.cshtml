@@ -50,11 +50,14 @@ else
 
                 @if (item.Owner.Email == User.Identity.Name)
                 {
-                    <a asp-action="Edit" asp-controller="Groups" asp-route-id="@item.Id">
+                    <a asp-action="EditPost" 
+                       asp-controller="Groups" 
+                       asp-route-id="@item.Id"  
+                       asp-route-groupId="@item.Group.Id">
                         <i class="far fa-edit"></i>
                         Edit It!
                     </a>
-                    <a asp-action="Delete" asp-controller="Groups" asp-route-id="@item.Id">
+                    <a asp-action="DeletePost" asp-controller="Groups" asp-route-id="@item.Id">
                         <i class="fas fa-slash"></i>
                         Delete It!
                     </a>
