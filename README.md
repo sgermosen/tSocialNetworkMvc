@@ -29,11 +29,23 @@ If you want to see the introduction of a mini-course that I prepared, check this
  
  
  # Captures
+ 
+  # Login
  ![Screenshot](1Login.png)
+ 
+  # Registration
   ![Screenshot](2Register.png)
+  
+  # Group List (Only public or my groups)
    ![Screenshot](3Groups.png)
+   
+  # Group Members (Only see for who is member, and if is admin or moderator can fire or ban a user)
     ![Screenshot](4GroupMembers.png)
+    
+  # Profile (Only can be edited by the owner, but consultant by everyone)
      ![Screenshot](5Profile.png)
+     
+  # Group Posts and Comments (Only members can see it, and only owner can edit it)
       ![Screenshot](6Post.png)
 
 
