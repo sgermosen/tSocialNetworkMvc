@@ -45,6 +45,7 @@ namespace Tetas.Web.ViewComponents
             ViewBag.Name = group.Name;
             ViewBag.Level = 0;
             ViewBag.IsMember = false;
+            ViewBag.IsBanned = false;
 
             var user = await CurrentUser();
 
@@ -63,7 +64,8 @@ namespace Tetas.Web.ViewComponents
             {
                 ViewBag.Level =(int) gMember.MemberType;
                 ViewBag.IsMember = gMember.State;
-                gMembers = await _context.GroupMembers.Include( p=> p.User)
+                ViewBag.IsBanned = gMember.Banned;
+               gMembers = await _context.GroupMembers.Include( p=> p.User)
                     .Where(p => p.Group.Id == id).ToListAsync();
             }
 

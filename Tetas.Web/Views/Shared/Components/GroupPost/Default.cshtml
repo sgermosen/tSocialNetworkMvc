@@ -4,7 +4,7 @@
     ViewData["Title"] = "Posts";
 }
 
-@if (!ViewBag.IsMember)
+@if (ViewBag.Level == 0 || !ViewBag.IsMember || ViewBag.IsBanned)
 {
     <div> You are not authorize to see this content</div>
 }

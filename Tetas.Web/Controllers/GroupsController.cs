@@ -218,6 +218,140 @@
             return View();
         }
 
+        public async Task<IActionResult> Aprove(long id)
+        {
+            
+            var gMember = await _context.GroupMembers.Include(g => g.Group)
+                .Include(u => u.User)
+                .Where(p => p.Id == id).FirstOrDefaultAsync();
+
+            if (gMember == null)
+            {
+                return NotFound();
+            }
+
+            var user = await CurrentUser();
+
+            if (!_context.GroupMembers.Any(  p=> p.Group.Id == gMember.Group.Id && 
+                                            p.User.Id == user.Id && 
+                                            ((int)p.MemberType==2 || (int)p.MemberType == 3)))
+            {
+                return Unauthorized();
+            }
+            if (gMember.Banned)
+            {
+                return Unauthorized();
+            }
+
+            if (gMember.State)
+            {
+                return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", gMember.Group.Id });
+            }
+
+
+            gMember.State = true;
+
+            _context.Update(gMember);
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupMember", gMember.Group.Id });
+        }
+
+        public async Task<IActionResult> Ban(long id)
+        {
+            var gMember = await _context.GroupMembers.Include(g => g.Group)
+                .Include(u => u.User)
+                .Where(p => p.Id == id).FirstOrDefaultAsync();
+
+            if (gMember == null)
+            {
+                return NotFound();
+            }
+
+            var user = await CurrentUser();
+
+            if (!_context.GroupMembers.Any(p => p.Group.Id == gMember.Group.Id &&
+                                          p.User.Id == user.Id &&
+                                          ((int)p.MemberType == 2 || (int)p.MemberType == 3)))
+            {
+                return Unauthorized();
+            }
+            if (gMember.Banned)
+            {
+                return Unauthorized();
+            }
+           
+            gMember.Banned = true;
+
+            _context.Update(gMember);
+            await _context.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupMember", gMember.Group.Id });
+        }
+
+        public async Task<IActionResult> RemoveBan(long id)
+        {
+            var gMember = await _context.GroupMembers.Include(g => g.Group)
+                .Include(u => u.User)
+                .Where(p => p.Id == id).FirstOrDefaultAsync();
+
+            if (gMember == null)
+            {
+                return NotFound();
+            }
+
+            var user = await CurrentUser();
+
+            if (!_context.GroupMembers.Any(p => p.Group.Id == gMember.Group.Id &&
+                                          p.User.Id == user.Id &&
+                                          ((int)p.MemberType == 2 || (int)p.MemberType == 3)))
+            {
+                return Unauthorized();
+            }
+           
+            gMember.Banned = false;
+
+            _context.Update(gMember);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupMember", gMember.Group.Id });
+        }
+
+        public async Task<IActionResult> Reject(long id)
+        {
+
+            var gMember = await _context.GroupMembers.Include(g => g.Group)
+                .Include(u => u.User)
+                .Where(p => p.Id == id).FirstOrDefaultAsync();
+
+            if (gMember == null)
+            {
+                return NotFound();
+            }
+
+            var user = await CurrentUser();
+
+            if (!_context.GroupMembers.Any(p => p.Group.Id == gMember.Group.Id &&
+                                          p.User.Id == user.Id &&
+                                          ((int)p.MemberType == 2 || (int)p.MemberType == 3)))
+            {
+                return Unauthorized();
+            }
+
+            if (gMember.Banned)
+            {
+                return Unauthorized();
+            }
+            
+            gMember.State = true;
+
+            _context.Remove(gMember);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupMember", gMember.Group.Id });
+        }
+
         public async Task<IActionResult> Join(long id, string reason = "")
         {
             var group = await _context.Groups.FindAsync(id);
@@ -225,7 +359,7 @@
             {
                 return NotFound();
             }
-            
+
             var user = await CurrentUser();
 
             var gMember = await _context.GroupMembers.Where(p => p.Group.Id == id && p.User.Id == user.Id).FirstOrDefaultAsync();
@@ -239,14 +373,14 @@
             {
                 return RedirectToAction(nameof(SwitchToTabs), new { tabname = "GroupPosts", group.Id });
             }
-            
+
             if (gMember == null)
             {
                 if (string.IsNullOrEmpty(reason))
                 {
                     reason = "I Want to be Joined to this group";
                 }
-                
+
                 gMember = new GroupMember
                 {
                     Name = reason,
@@ -382,7 +516,7 @@
 
                 await _groupRepository.AddAsync(group);
 
-               var gMember = new GroupMember
+                var gMember = new GroupMember
                 {
                     Name = "I am the Admin",
                     Group = group,

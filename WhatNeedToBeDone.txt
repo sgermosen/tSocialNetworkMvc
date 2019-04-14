@@ -67,7 +67,7 @@ Groups
 2. User can create, edit, delete post on groups.
 3. User can create, edit, delete comment on groups.
 4. User can ask for join to a groups.					(done)
-5. Group owner can acept or reject user application to a groups.
+5. Group owner can acept, reject or ban user application to a groups.	(done)
 6. Post owner can delete comments on their post on groups.
 7. Group owner can delete post on their groups.
 8. Group owner can delete comment on post on their groups.
@@ -76,6 +76,7 @@ Groups
 11. Post can be mark as principal (important) on groups.
 12. Group posts can be see just by member				(done)
 13. Group members can be see just by member
+14. Group owner and moderator can fire a member from group		(done)
 
 Quizz
 1. User can create, edit, delete quizz on their profiles.

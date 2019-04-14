@@ -48,6 +48,7 @@ namespace Tetas.Web.ViewComponents
 
             ViewBag.IsAdmin = false;
             ViewBag.IsMember = false;
+            ViewBag.IsBanned = false;
 
             var user = await CurrentUser();
 
@@ -65,6 +66,7 @@ namespace Tetas.Web.ViewComponents
             if(gMember!=null)
             {
                 ViewBag.IsMember = gMember.State;
+                ViewBag.IsBanned = gMember.Banned;
                 gPost = await _context.GroupPosts.Where(p => p.Group.Id == id).ToListAsync();
             }                
 

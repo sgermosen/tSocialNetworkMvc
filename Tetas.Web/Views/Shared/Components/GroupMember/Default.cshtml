@@ -6,7 +6,7 @@
 
 <h1>Group Members</h1>
 
-@if (ViewBag.Level == 0 || (ViewBag.Level == 1 && !ViewBag.IsMember ) )
+@if (ViewBag.Level == 0 ||  !ViewBag.IsMember  || ViewBag.IsBanned )
 {
     <div> You are not authorize to see this content</div>
 }
@@ -22,9 +22,7 @@ else
                     <th>
                         Application Date
                     </th>
-                    <th>
-                        State
-                    </th>
+                    
                     <th>
                         Reazon
                     </th>
@@ -43,26 +41,32 @@ else
                         <td>
                             @Html.DisplayFor(modelItem => item.ApplicationDate)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.State)
-                        </td>
+                        
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
 
                         <td>
-                            @if ((int)item.MemberType != 2)
+                            @if (!item.Banned)
                             {
-                                if ((ViewBag.Level == 2 || ViewBag.Level == 3) && !item.State && item.Applied)
+                                if ((int)item.MemberType != 2)
                                 {
-                                    <a class="btn btn-success" asp-action="Aprove" asp-route-id="@item.Id">Aprove Application</a>
-                                    <a class="btn btn-danger" asp-action="Reject" asp-route-id="@item.Id">Reject Application</a>
+                                    if ((ViewBag.Level == 2 || ViewBag.Level == 3) && !item.State && item.Applied)
+                                    {
+                                        <a class="btn btn-success" asp-controller="Groups" asp-action="Aprove" asp-route-id="@item.Id">Aprove Application</a>
+                                        <a class="btn btn-danger" asp-controller="Groups" asp-action="Reject" asp-route-id="@item.Id">Reject Application</a>
+                                    }
+                                    else if ((ViewBag.Level == 2 || ViewBag.Level == 3) && item.State)
+                                    {
+                                        <a class="btn btn-danger" asp-controller="Groups" asp-action="Reject" asp-route-id="@item.Id">Take Out from the Group</a>
+                                        <a class="btn btn-danger" asp-controller="Groups" asp-action="Ban" asp-route-id="@item.Id">Take Out And Bann from the Group</a>
+                                    }
                                 }
-                                else if ((ViewBag.Level == 2 || ViewBag.Level == 3) && item.State)
-                                {
-                                    <a class="btn btn-danger" asp-action="Reject" asp-route-id="@item.Id">Take Out from the Group</a>
-                                    <a class="btn btn-danger" asp-action="RejectBan" asp-route-id="@item.Id">Take Out And Bann from the Group</a>
-                                }
+                            }
+                            else
+                            {
+                                <a class="btn btn-warning" asp-controller="Groups" asp-action="RemoveBan" asp-route-id="@item.Id">DisBann This User</a>
+
                             }
 
                         </td>
