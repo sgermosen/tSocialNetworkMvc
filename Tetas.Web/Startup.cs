@@ -29,9 +29,10 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           // services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // Or you can also register as follows
-            services.AddHttpContextAccessor();
+            //services.AddHttpContextAccessor();
+            services.AddMyDependencies(Configuration);
 
             services.AddIdentity<ApplicationUser, IdentityRole>(cfg =>
                 {
@@ -68,19 +69,18 @@
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("sGDatabaseCnn"));
             });
 
-              services.AddTransient<SeedDb>();
+            services.AddTransient<SeedDb>();
 
-            #region RepositoryScopes
+            //moved to separeted configuration file
+            //#region RepositoryScopes
+            ////services.AddScoped<IPostComment, PostCommentRepository>();
+            //services.AddScoped<IPost, PostRepository>();
+            //services.AddScoped<IGroup, GroupRepository>();
+            //#endregion
 
-             //services.AddScoped<IPostComment, PostCommentRepository>();
-            services.AddScoped<IPost, PostRepository>();
-            services.AddScoped<IGroup, GroupRepository>();
-        
-            #endregion
-
-    services.AddScoped<IPsSelectList, PsSelectList>();
-            services.AddScoped<IUserHelper, UserHelper>();
-            services.AddScoped<IMailHelper, MailHelper>();
+            //services.AddScoped<IPsSelectList, PsSelectList>();
+            //services.AddScoped<IUserHelper, UserHelper>();
+            //services.AddScoped<IMailHelper, MailHelper>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -94,7 +94,7 @@
                 options.LoginPath = "/Account/NotAuthorized";
                 options.AccessDeniedPath = "/Account/NotAuthorized";
             });
-            
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -111,7 +111,7 @@
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseStatusCodePagesWithReExecute("/error/{0}");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
