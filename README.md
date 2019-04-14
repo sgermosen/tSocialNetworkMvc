@@ -4,26 +4,31 @@ Is an open source social networking web application that provides a robust app o
 
 If you want to see the introduction of a mini-course that I prepared, check this video: https://www.youtube.com/watch?v=-E-rAqeGKp4&t=69s&list=PLE4SNWIDX7wtQd3fA5Aa6cJExKaruJ19C&index=2
 
-# Things than are ready
+# Things than are ready done
 
-*Register users.
-
-*Create, Edit, Delete Wall post.
-
-*Create, Edit, Delete comments on post.
-
-*Validate than just the owner can edit or delete their comments or their post.
-
-*Validate than just the owner can delete comments from another on his post.
-
-*Group creation.
-
-*Group post.
-
-*Group comments.
-
-*Timeline (Wall).
-
+*User can register on the app with a valid email. 		 
+*User can edit their own personal info.				 
+*User can create posts.
+*User can edit their own posts.
+*User can create comments on posts.
+*User can edit their own comments on posts.
+*User can create groups.
+*User can edit their own groups.		
+*User can ask for join to a groups.	
+*User can Accept the asking to join on groups where he is owner or moderator
+*User can reject the asking to join on groups where he is owner or moderator
+*User can fire members on groups where he is owner or moderator
+*User can ban members on groups where he is owner or moderator
+*User can disban members on groups where he is owner or moderator
+*User can see members on groups where he is member or owner.
+*User can see posts on groups where he is member or owner.
+*User can create posts on groups where he is member or owner.
+*User can edit their own posts on groups where he is member or owner.
+*User can create comments on groups where he is member or owner.
+*User can edit their own comments on groups where he is member or owner.
+ 
+ 
+ See the WhatNeedToBeDone.txt if you want to colaborate with something and fell confortable to open an issue if you need it.
  
  Please, feel free to pull a Request, and colaborate with it, I promese check all the request, test it, and add it.
  
@@ -37,16 +42,16 @@ If you want to see the introduction of a mini-course that I prepared, check this
   ![Screenshot](2Register.png)
   
   # Group List (Only public or my groups)
-   ![Screenshot](3Groups.png)
+  ![Screenshot](3Groups.png)
    
   # Group Members (Only see for who is member, and if is admin or moderator can fire or ban a user)
-    ![Screenshot](4GroupMembers.png)
+  ![Screenshot](4GroupMembers.png)
     
   # Profile (Only can be edited by the owner, but consultant by everyone)
-     ![Screenshot](5Profile.png)
+  ![Screenshot](5Profile.png)
      
   # Group Posts and Comments (Only members can see it, and only owner can edit it)
-      ![Screenshot](6Post.png)
+  ![Screenshot](6Post.png)
 
 
 # Getting Started
