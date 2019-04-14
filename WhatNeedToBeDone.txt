@@ -64,7 +64,7 @@ Post Comments
 
 Groups
 1. User can create, edit, delete their groups.				edit,create
-2. User can create, edit, delete post on groups.			create
+2. User can create, edit, delete post on groups.			create, edit
 3. User can create, edit, delete comment on groups.			create,edit
 4. User can ask for join to a groups.					(done)
 5. Group owner can acept, reject, ban or disban users 			(done)

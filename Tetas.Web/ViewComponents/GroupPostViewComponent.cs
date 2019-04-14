@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Tetas.Domain.Entities;
-using Tetas.Infraestructure;
-using Tetas.Repositories.Contracts;
-using Tetas.Web.Helpers;
-using Tetas.Web.Models;
-
-namespace Tetas.Web.ViewComponents
+﻿namespace Tetas.Web.ViewComponents
 {
+    using Domain.Entities;
+    using Helpers;
+    using Infraestructure;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Repositories.Contracts;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class GroupPostViewComponent : ViewComponent
     {
         private IUserHelper UserHelper;
@@ -21,7 +19,7 @@ namespace Tetas.Web.ViewComponents
         private GenericSelectList GenericSelectList;
         private readonly ApplicationDbContext _context;
 
-        public GroupPostViewComponent(IUserHelper userHelper, IConfiguration configuration, IPsSelectList psSelectList, ApplicationDbContext context)            
+        public GroupPostViewComponent(IUserHelper userHelper, IConfiguration configuration, IPsSelectList psSelectList, ApplicationDbContext context)
         {
             UserHelper = userHelper;
             Configuration = configuration;
@@ -37,9 +35,9 @@ namespace Tetas.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(long id)
         {
-            var group = await _context.Groups.Include(o=>o.Owner).Where(p=>p.Id==id).FirstOrDefaultAsync();
+            var group = await _context.Groups.Include(o => o.Owner).Where(p => p.Id == id).FirstOrDefaultAsync();
 
-            if (group==null)
+            if (group == null)
             {
                 //return NotFound();
             }
@@ -52,23 +50,25 @@ namespace Tetas.Web.ViewComponents
 
             var user = await CurrentUser();
 
-            if(group.Owner.Id==user.Id)
+            if (group.Owner.Id == user.Id)
             {
                 ViewBag.IsAdmin = true;
             }
 
             var gPost = new List<GroupPost>();
-                       
+
             var gMember = await _context.GroupMembers
                 .Where(p => p.Group.Id == id && p.User.Id == user.Id)
                 .FirstOrDefaultAsync();
 
-            if(gMember!=null)
+            if (gMember != null)
             {
                 ViewBag.IsMember = gMember.State;
                 ViewBag.IsBanned = gMember.Banned;
-                gPost = await _context.GroupPosts.Where(p => p.Group.Id == id).ToListAsync();
-            }                
+                gPost = await _context.GroupPosts.Where(p => p.Group.Id == id)
+                    .OrderByDescending(p=>p.CreationDate)
+                    .ToListAsync();
+            }
 
             return View(gPost);
         }
