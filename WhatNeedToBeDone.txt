@@ -1,3 +1,7 @@
+---------------------------------------------------------------------------------------
+Dependency Flow------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
+
 Registration => Personal Info
 
 Pin post
@@ -23,7 +27,10 @@ Article
 Fragment
 Short Books
 
-Pending Works, Schedule
+---------------------------------------------------------------------------------------
+Pending Works, Schedule----------------------------------------------------------------
+---------------------------------------------------------------------------------------
+
 Interchanges
 Reviews
 Groups
@@ -31,15 +38,19 @@ Events
 Articles
 Memes
 Condecorations
-Sale => Documents, articles
+Sale => Documents, Articles
 Phrase
 Investigation
 Sarcasm
 Document
 Chat
 
-//////////////////Histories///////////
+---------------------------------------------------------------------------------------
+Histories------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
+
 Users
+---------------------------------------------------------------------------------------
 1. User can register on the app with a valid email. 			(done)
 2. User can edit their personal info.
 3. User can Companion people (kind of companion can be: Pal,
@@ -51,6 +62,7 @@ Users
 8. User receive notifications.
 
 Posts
+---------------------------------------------------------------------------------------
 1. User can create, edit, delete their posts. 				create,edit
 2. User can pin (make favorite) a their or someone else posts.
 3. User can react (Adore, Admire, Agree, Enjoy, Disagree, 
@@ -58,11 +70,13 @@ Posts
 
 
 Post Comments
+---------------------------------------------------------------------------------------
 1. User can create, edit, delete their comments on posts. 		create,edit
 2. Post owner can delete comments on their posts. 			
 2. User can react their or someone else comments.
 
 Groups
+---------------------------------------------------------------------------------------
 1. User can create, edit, delete their groups.				edit,create
 2. User can create, edit, delete post on groups.			create,edit
 3. User can create, edit, delete comment on groups.			create,edit
@@ -79,6 +93,7 @@ Groups
 14. Group owner and moderator can fire a member from group		(done)
 
 Quizz
+---------------------------------------------------------------------------------------
 1. User can create, edit, delete quizz on their profiles.
 2. User can create, edit, delete quizz on their groups.
 3. User can create, edit, delete quiestions on their quizzes.
@@ -91,6 +106,7 @@ Quizz
 10. System can suggest user to repeat their quizz by payment.
 
 Chats (signal r client)
+---------------------------------------------------------------------------------------
 1. User can create, edit, delete chat with people.
 2. User can block people.
 
