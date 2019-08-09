@@ -60,6 +60,8 @@ Users
 6. User can condecore people.
 7. Condecorations can be monetary payment.
 8. User receive notifications.
+9. User can be registered with github.
+10. User can be regitered with outlook.
 
 Posts
 ---------------------------------------------------------------------------------------

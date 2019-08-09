@@ -45,7 +45,7 @@ else
         </div>
     </div>
 
-    <div>
+    @*<div>
         <h3> Dernier On Your Groups</h3>
         <div id="tableHolder">
             <partial name="_GroupsPartial" model="groupList" />
@@ -71,8 +71,8 @@ else
         <div id="tableHolder">
             <partial name="_NewsPartial" model="postList" />
         </div>
-    </div>
-    <div>
+    </div>*@
+    @*<div>
         <h5>Icons to implement (done here because i dont want to lose time each time that i want to implement a fontawsome icons)</h5>
         <i class="fab fa-discourse fa-5x"></i>
         <i class="far fa-frown-open fa-5x"></i>
@@ -146,7 +146,7 @@ else
         <i class="far fa-surprise fa-5x"></i>
 
 
-    </div>
+    </div>*@
 
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 
@@ -215,7 +215,7 @@ else
                 //    'json');
             //});
 
-            url = '@Url.Action("GroupsFilter", "Home")';
+            @*url = '@Url.Action("GroupsFilter", "Home")';
             $.ajax({
                 type: "POST",
                 url: url, //call your controller and action
@@ -234,7 +234,7 @@ else
                 failure: function() {
                     console.log("problems retriving group data");
                 }
-            });
+            });*@
 
        });
 

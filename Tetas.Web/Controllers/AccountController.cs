@@ -187,8 +187,8 @@ namespace Tetas.Web.Controllers
                     {
                         _mailHelper.SendMail(model.Email,
                      "Tetas Email confirmation", $"<h1>Tetas Email confirmation</h1>" +
-                                                 $"for the activation of this account " +
-                                                 $"please click on the followed link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+                                                 $"For the activation of this account " +
+                                                 $"please click on the followed link:</br></br><a href = \"{tokenLink}\">Confirm Email Link</a>");
 
                     }
                     finally { }

@@ -20,7 +20,7 @@
         {
             var posts = _context.Posts
                 .Include(p => p.PostComments).ThenInclude(u => u.Owner)
-                .Include(p => p.Owner).Where(p => p.Deleted != true);
+                .Include(p => p.Owner).Where(p => !p.Deleted);
 
             if (!string.IsNullOrEmpty(userid))
             {
@@ -34,13 +34,13 @@
         {
             return await _context.Posts
                 .Include(p => p.PostComments).ThenInclude(u => u.Owner)
-                .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();
+                .Include(p => p.Owner).Where(p => p.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<PostComment> GetPostCommentByIdAsync(long id)
         {
             return await _context.PostComments.Include(p => p.Post).ThenInclude(pu => pu.Owner)
-                .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();
+                .Include(p => p.Owner).Where(p => p.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<PostComment> AddCommentAsync(PostComment comment)

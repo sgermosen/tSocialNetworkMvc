@@ -6,6 +6,7 @@ namespace Tetas.Infraestructure
     using EntityConfigurations;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+    using System;
     using System.Linq;
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -26,6 +27,8 @@ namespace Tetas.Infraestructure
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
 
             base.OnModelCreating(modelBuilder);
+
+            AddMyFilters(ref modelBuilder);
 
             // modelBuilder.ApplyAllConfigurations(); 
             //registering the configurations for all the classes
@@ -54,6 +57,21 @@ namespace Tetas.Infraestructure
                 }
             };
           
+        }
+
+        private void AddMyFilters(ref ModelBuilder modelBuilder)
+        {
+             
+            #region SoftDeleted
+            modelBuilder.Entity<PostComment>().HasQueryFilter(x => !x.Deleted);
+            modelBuilder.Entity<Post>().HasQueryFilter(x => !x.Deleted);         
+            modelBuilder.Entity<Group>().HasQueryFilter(x => !x.Deleted);
+            modelBuilder.Entity<GroupMember>().HasQueryFilter(x => !x.Deleted);
+            modelBuilder.Entity<GroupPost>().HasQueryFilter(x => !x.Deleted);           
+            modelBuilder.Entity<GroupPostComment>().HasQueryFilter(x => !x.Deleted);
+            modelBuilder.Entity<GroupType>().HasQueryFilter(x => !x.Deleted);
+            modelBuilder.Entity<Privacy>().HasQueryFilter(x => !x.Deleted);
+            #endregion
         }
 
         //public DbSet<Owner> Owners { get; set; }

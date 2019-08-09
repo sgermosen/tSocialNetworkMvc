@@ -26,7 +26,7 @@
                 </span>
                 <br /> <br />
                 <h6>
-                    Post Title:
+                    @*Post Title:*@
                     <a asp-route-id="@item.Id" asp-controller="Posts"
                        asp-action="Details">
                         @item.Name
@@ -35,25 +35,28 @@
                 <pre style="color: blue">  @Html.Raw(item.Body) </pre>
 
 
-                <a asp-action="React" asp-controller="Posts" asp-route-id="@item.Id">
+                @*<a asp-action="React" asp-controller="Posts" asp-route-id="@item.Id">
                     <i class="fas fa-bolt"></i>
                     React!
-                </a>
+                </a>*@
                 <a asp-action="Comment" asp-controller="Posts" asp-route-id="@item.Id">
                     <i class="far fa-comment"></i>
                     Comment It!
                 </a>
+                &nbsp;
 
                 @if (item.Owner.Email == User.Identity.Name)
                 {
-                    <a asp-action="Edit" asp-controller="Posts" asp-route-id="@item.Id">
-                        <i class="far fa-edit"></i>
-                        Edit It!
-                    </a>
-                    <a asp-action="Delete" asp-controller="Posts" asp-route-id="@item.Id">
-                        <i class="fas fa-slash"></i>
-                        Delete It!
-                    </a>
+            <a asp-action="Edit" asp-controller="Posts" asp-route-id="@item.Id">
+                <i class="far fa-edit"></i>
+                Edit It! &nbsp;
+            </a>
+                     
+            <a asp-action="Delete" asp-controller="Posts" asp-route-id="@item.Id">
+                <i class="fas fa-slash"></i>
+                Delete It! &nbsp;
+            </a>
+                    
                 }
 
                 <a asp-action="Details" asp-controller="Posts" asp-route-id="@item.Id">
@@ -66,31 +69,31 @@
                 @if (item.PostComments.Any())
                 {
 
-                    foreach (var item2 in item.PostComments)
+                    foreach (var comment in item.PostComments)
                     {
                         <div style="padding-left: 20px" class="rcorners2">
-                            <a style="font-size: large" asp-route-id="@item2.Owner.Email" asp-controller="Account"
+                            <a style="font-size: large" asp-route-id="@comment.Owner.Email" asp-controller="Account"
                                asp-action="Profile">
-                                @item2.Owner.FullName
+                                @comment.Owner.FullName
                             </a>
 
-                            comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => item2.Date)</span>
+                            comment on <span style="font-size: small"> @Html.DisplayFor(modelItem => comment.Date)</span>
 
-                            <p style="color: black"> Comment Title: @Html.DisplayFor(modelItem => item2.Name)</p>
+                            <p style="color: black"> @*Comment Title:*@ @Html.DisplayFor(modelItem => comment.Name)</p>
                             <div class="rcorners1">
 
-                                <p style="color: black"> @Html.Raw(item2.Body) </p>
+                                <p style="color: black"> @Html.Raw(comment.Body) </p>
                             </div>
-                            @if (item2.Owner.Email == User.Identity.Name)
+                            @if (comment.Owner.Email == User.Identity.Name)
                             {
-                                <a asp-action="EditComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                                <a asp-action="EditComment" asp-controller="Posts" asp-route-id="@comment.Id">
                                     <i class="far fa-comment-dots"></i>
                                     Edit this comment
                                 </a>
                             }
-                            @if (item2.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
+                            @if (comment.Owner.Email == User.Identity.Name || item.Owner.Email == User.Identity.Name)
                             {
-                                <a asp-action="DeleteComment" asp-controller="Posts" asp-route-id="@item2.Id">
+                                <a asp-action="DeleteComment" asp-controller="Posts" asp-route-id="@comment.Id">
                                     <i class="fas fa-comment-slash"></i>
                                     Delete this comment
                                 </a>

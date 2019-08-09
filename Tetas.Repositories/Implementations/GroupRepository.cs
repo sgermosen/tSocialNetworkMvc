@@ -21,7 +21,7 @@
 
         public IQueryable<Group> GetGroupWithPostsAndComments(string userid, long groupid)
         {
-            var groups = _context.Groups.Where(p => p.Id == groupid && p.Deleted != true)
+            var groups = _context.Groups.Where(p => p.Id == groupid )
                 .Include(p => p.Privacy).Include(t => t.Type)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpc => gpc.GroupPostComments).ThenInclude(gpcu => gpcu.Owner)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpu => gpu.Owner)
@@ -151,7 +151,7 @@
 
         public async Task<Group> GetGroupWithPostsAndComments(long groupid)
         {
-            var group = await _context.Groups.Where(p => p.Id == groupid && p.Deleted != true)
+            var group = await _context.Groups.Where(p => p.Id == groupid )
                 .Include(p => p.Privacy).Include(t => t.Type)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpc => gpc.GroupPostComments).ThenInclude(gpcu => gpcu.Owner)
                 .Include(gp => gp.GroupPosts).ThenInclude(gpu => gpu.Owner)
@@ -199,13 +199,13 @@
         {
             return await _context.GroupPosts.Include(p=>p.Group)
                 .Include(p => p.GroupPostComments).ThenInclude(u => u.Owner)
-                .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();
+                .Include(p => p.Owner).Where(p => p.Id == id ).FirstOrDefaultAsync();
         }
 
         public async Task<GroupPostComment> GetPostCommentByIdAsync(long id)
         {
             return await _context.GroupPostComments.Include(p => p.Post).ThenInclude(pu => pu.Owner)
-                .Include(p => p.Owner).Where(p => p.Id == id && p.Deleted != true).FirstOrDefaultAsync();
+                .Include(p => p.Owner).Where(p => p.Id == id ).FirstOrDefaultAsync();
         }
 
         public async Task<GroupPostComment> AddCommentAsync(GroupPostComment comment)

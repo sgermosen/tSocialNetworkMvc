@@ -32,7 +32,8 @@
         //    var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         //}
         #region PostComments
-        public async Task<IActionResult> Comment(long id)
+
+        public IActionResult Comment(long id)
         {
             var postComment = new PostCommentViewModel { PostId = id };
             return View(postComment);
@@ -183,8 +184,10 @@
         {
             var comment = await _postRepository.GetPostCommentByIdAsync(id);
             var postId = comment.Post.Id;
-            await _postRepository.DeleteCommentAsync(comment);
-            return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
+            // await _postRepository.DeleteCommentAsync(comment);
+            comment.Deleted = true;
+             await _postRepository.UpdateCommentAsync(comment);
+            return RedirectToAction(nameof(Details), new { id = postId });
         }
 
         private async Task<bool> PostCommentExists(long id)
@@ -331,7 +334,9 @@
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var post = await _postRepository.FindByIdAsync(id);
-            await _postRepository.DeleteAsync(post);
+            post.Deleted = true;
+            await _postRepository.UpdateAsync(post);
+            //await _postRepository.DeleteAsync(post);
             return RedirectToAction(nameof(Index));
         }
 
