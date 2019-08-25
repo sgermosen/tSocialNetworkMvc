@@ -204,7 +204,9 @@
 
         public async Task<GroupPostComment> GetPostCommentByIdAsync(long id)
         {
-            return await _context.GroupPostComments.Include(p => p.Post).ThenInclude(pu => pu.Owner)
+            return await _context.GroupPostComments
+                .Include(p => p.Post).ThenInclude(pu => pu.Owner)
+                .Include(p => p.Post).ThenInclude(pu => pu.Group)
                 .Include(p => p.Owner).Where(p => p.Id == id ).FirstOrDefaultAsync();
         }
 

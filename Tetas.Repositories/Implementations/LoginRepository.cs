@@ -1,14 +1,13 @@
 ﻿namespace Tetas.Repositories.Implementations
 {
-    using System.Threading.Tasks;
-    using Domain.Entities;
     using Infraestructure;
     using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Internal;
     using Repositories.Contracts;
+    using System.Threading.Tasks;
 
-    public class LoginRepository:ILogin<LoginModel>
+    public class LoginRepository : ILogin<LoginModel>
     {
-        public LoginRepository(ApplicationDbContext context) 
+        public LoginRepository(ApplicationDbContext context)
         {
         }
 
@@ -17,5 +16,5 @@
             throw new System.NotImplementedException();
         }
     }
-     
+
 }

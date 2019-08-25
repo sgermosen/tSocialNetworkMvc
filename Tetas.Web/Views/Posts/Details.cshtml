@@ -5,26 +5,7 @@
 }
 
 <hr />
-@*<dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Body)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Body)
-    </dd>*@
-@*<p>
-    @if (Model.Owner.Email == User.Identity.Name)
-    {
-        <a class="btn btn-warning" asp-action="Edit"
-           asp-route-id="@Model.Id">
-            Edit this Post
-        </a>
-        <a class="btn btn-danger" asp-action="Delete"
-           asp-route-id="@Model.Id">
-            Delete this Post
-        </a>
-
-    }
-</p>*@
+  
 <div>
     @if (Model.Owner.Email != User.Identity.Name) { 
         <span style="font-size: large">

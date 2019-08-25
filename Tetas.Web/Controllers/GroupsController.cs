@@ -215,9 +215,9 @@
         public async Task<IActionResult> DeleteCommentConfirmed(long id)
         {
             var comment = await _groupRepository.GetPostCommentByIdAsync(id);
-            var postId = comment.Post.Id;
+            var groupId = comment.Post.Group.Id;
             await _groupRepository.DeleteCommentAsync(comment);
-            return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
+            return RedirectToAction(nameof(Details), new { id = groupId });
         }
 
         private async Task<bool> PostCommentExists(long id)
@@ -358,6 +358,37 @@
 
             }
             return View(vm);
+        }
+
+        public async Task<IActionResult> DeletePost(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var post = await _groupRepository.GetPostByIdAsync(id.Value);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+            if (post.Owner.Email != User.Identity.Name)
+            {
+                return Unauthorized();
+            }
+
+            return View(post);
+        }
+
+        [HttpPost, ActionName("DeletePost")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePostConfirmed(long id)
+        {
+            var post = await _groupRepository.GetPostByIdAsync(id);
+            var groupId  = post.Group.Id;
+            await _groupRepository.DeletePostAsync(post);
+            return RedirectToAction(nameof(Details), new { id = groupId });
         }
 
         private async Task<bool> PostExists(long id)
@@ -681,7 +712,7 @@
                     Banned = false,
                     State = true,
                     Applied = true,
-                    MemberType = (MemberType)2,
+                    MemberType = MemberType.Admin,
                 };
 
                 await _context.GroupMembers.AddAsync(gMember);
