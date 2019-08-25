@@ -52,10 +52,21 @@
 
         public async Task<bool> DeleteCommentAsync(PostComment comment)
         {
-            _context.PostComments.Remove(comment);
-            int result = await _context.SaveChangesAsync();
+            //_context.PostComments.Remove(comment);
+            //int result = await _context.SaveChangesAsync();
+            //return result > 0;
+            comment.Deleted = true;
+            _context.Update(comment);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
-            return result > 0;
+            return true;
         }
 
         public async Task<bool> UpdateCommentAsync(PostComment comment)

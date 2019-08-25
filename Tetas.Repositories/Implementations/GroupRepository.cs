@@ -169,10 +169,21 @@
 
         public async Task<bool> DeletePostAsync(GroupPost post)
         {
-            _context.GroupPosts.Remove(post);
-            int result = await _context.SaveChangesAsync();
+            //_context.GroupPosts.Remove(post);
+            //int result = await _context.SaveChangesAsync();
+            //return result > 0;
+            post.Deleted = true;
+            _context.Update(post);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
-            return result > 0;
+            return true;
         }
 
         public async Task<bool> UpdatePostAsync(GroupPost post)
@@ -219,10 +230,23 @@
 
         public async Task<bool> DeleteCommentAsync(GroupPostComment comment)
         {
-            _context.GroupPostComments.Remove(comment);
-            int result = await _context.SaveChangesAsync();
+            comment.Deleted = true;
+            _context.Update(comment);
 
-            return result > 0;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+            //_context.GroupPostComments.Remove(comment);
+            //int result = await _context.SaveChangesAsync();
+
+            //return result > 0;
         }
 
         public async Task<bool> UpdateCommentAsync(GroupPostComment comment)

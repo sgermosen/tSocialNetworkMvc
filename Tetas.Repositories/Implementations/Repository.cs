@@ -41,10 +41,21 @@
 
         public async Task<bool> DeleteAsync(TEntity entity)
         {
-            _context.Set<TEntity>().Remove(entity);
-            int result = await _context.SaveChangesAsync();
+            entity.Deleted = true;
+            //_context.Set<TEntity>().Remove(entity);
+            //int result = await _context.SaveChangesAsync();
+            //return result > 0;
+            _context.Update(entity);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
-            return result > 0;
+            return true;
         }
 
         public async Task<bool> UpdateAsync(TEntity entity)
