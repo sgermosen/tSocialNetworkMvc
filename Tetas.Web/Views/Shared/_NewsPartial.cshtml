@@ -26,14 +26,16 @@
                 </span>
                 <br /> <br />
                 <h6>
-
-                    @*Post Title:*@
-                    <a asp-route-id="@item.Id" asp-controller="Posts"
-                       asp-action="Details">
-                        @item.Name
-                    </a>
+                    <b>    
+                        @*Post Title:*@
+                      <a asp-route-id="@item.Id" asp-controller="Posts"  asp-action="Details">
+                          @item.Name
+                      </a>
+                    </b>
+               
+                  
                 </h6>
-                <pre style="color: blue">  @Html.Raw(item.Body) </pre>
+                <pre style="color: black">  @Html.Raw(item.Body) </pre>
 
 
                 @*<a asp-action="React" asp-controller="Posts" asp-route-id="@item.Id">

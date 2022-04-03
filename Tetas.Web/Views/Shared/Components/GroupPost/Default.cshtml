@@ -30,12 +30,14 @@ else
         <br /> <br />
         <h6>
             Post Title:
+            <b> 
             <a asp-route-id="@item.Id" asp-controller="Groups"
                asp-action="Details">
                 @item.Name
             </a>
+            </b> 
         </h6>
-        <pre style="color: blue">  @Html.Raw(item.Body) </pre>
+        <pre style="color: black">  @Html.Raw(item.Body) </pre>
 
         @*<a asp-action="React" asp-controller="Groups" asp-route-id="@item.Id">
             <i class="fas fa-bolt"></i>

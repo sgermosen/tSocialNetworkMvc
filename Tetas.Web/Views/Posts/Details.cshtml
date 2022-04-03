@@ -14,9 +14,10 @@
     post on <span style="font-size: small"> @Html.DisplayFor(model => model.Date)</span>
     <br /> <br />
     <h6>
-        @*Post Title:*@ @Html.DisplayFor(model => model.Name)
+        @*Post Title:*@
+        <b> @Html.DisplayFor(model => model.Name) </b>
     </h6>
-    <pre style="color: blue">  @Html.Raw(Model.Body) </pre>
+    <pre style="color: black">  @Html.Raw(Model.Body) </pre>
 
 
     @*<a asp-action="React" asp-controller="Posts" asp-route-id="@Model.Id">
