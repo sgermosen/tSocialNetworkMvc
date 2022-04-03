@@ -97,8 +97,6 @@
                 Body = comment.Body,
                 Name = comment.Name,
                 Date = comment.Date,
-                Owner = comment.Owner,
-                Post = comment.Post,
                 OwnerId = comment.Owner.Id
             };
             return View(postComment);

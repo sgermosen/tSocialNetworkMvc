@@ -9,7 +9,7 @@
         public void Configure(EntityTypeBuilder<PostComment> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
+            builder.Property(x => x.Name).HasMaxLength(100);
             builder.Property(x => x.Body).IsRequired().HasMaxLength(4000);
         }
     }
