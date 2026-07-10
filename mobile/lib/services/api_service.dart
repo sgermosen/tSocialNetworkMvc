@@ -154,6 +154,36 @@ class ApiService {
     }
   }
 
+  Future<List<AppNotification>> getNotifications() async {
+    final response =
+        await http.get(_uri('/api/notifications'), headers: _headers());
+    if (response.statusCode == 200) {
+      final list = jsonDecode(response.body) as List<dynamic>;
+      return list
+          .map((n) => AppNotification.fromJson(n as Map<String, dynamic>))
+          .toList();
+    }
+    _fail(response);
+  }
+
+  Future<int> unreadCount() async {
+    final response = await http.get(
+      _uri('/api/notifications/unread-count'),
+      headers: _headers(),
+    );
+    if (response.statusCode == 200) {
+      return int.tryParse(response.body) ?? 0;
+    }
+    return 0;
+  }
+
+  Future<void> markAllNotificationsRead() async {
+    await http.post(
+      _uri('/api/notifications/read-all'),
+      headers: _headers(),
+    );
+  }
+
   Future<List<Group>> getGroups() async {
     final response = await http.get(_uri('/api/groups'), headers: _headers());
     if (response.statusCode == 200) {

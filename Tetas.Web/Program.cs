@@ -114,6 +114,8 @@ namespace Tetas.Web
                 options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
             });
 
+            services.AddSignalR();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("ApiClients", policy =>
@@ -158,6 +160,8 @@ namespace Tetas.Web
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapHub<Hubs.NotificationHub>("/hubs/notifications");
 
             app.MapControllerRoute(
                 name: "areas",

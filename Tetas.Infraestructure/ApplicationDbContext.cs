@@ -43,6 +43,7 @@ namespace Tetas.Infraestructure
             modelBuilder.ApplyConfiguration(new PostCommentConfig());
             modelBuilder.ApplyConfiguration(new PrivacyConfig());
             modelBuilder.ApplyConfiguration(new ReactionConfig());
+            modelBuilder.ApplyConfiguration(new NotificationConfig());
 
             //  new ApplicationUserConfig(modelBuilder.Entity<ApplicationUser>());
             //new OwnerConfig(modelBuilder.Entity<Owner>());
@@ -95,6 +96,8 @@ namespace Tetas.Infraestructure
         public DbSet<Privacy> Privacies { get; set; }
 
         public DbSet<Reaction> Reactions { get; set; }
+
+        public DbSet<Notification> Notifications { get; set; }
 
     }
 }

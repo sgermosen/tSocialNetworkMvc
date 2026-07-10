@@ -16,12 +16,15 @@
         private readonly IPost _postRepository;
         private readonly IUserHelper _userHelper;
         private readonly IContentSanitizer _sanitizer;
+        private readonly INotificationService _notifications;
 
-        public PostsController(IPost postRepository, IUserHelper userHelper, IContentSanitizer sanitizer)
+        public PostsController(IPost postRepository, IUserHelper userHelper,
+            IContentSanitizer sanitizer, INotificationService notifications)
         {
             _postRepository = postRepository;
             _userHelper = userHelper;
             _sanitizer = sanitizer;
+            _notifications = notifications;
         }
         //private readonly IHttpContextAccessor _httpContextAccessor;
         //public OtherClass(IHttpContextAccessor httpContextAccessor)
@@ -69,6 +72,13 @@
                 comment.Date = DateTime.UtcNow;
 
                 await _postRepository.AddCommentAsync(comment);
+
+                if (post.Owner != null && post.Owner.Id != user.Id)
+                {
+                    var url = Url.Action(nameof(Details), "Posts", new { id = post.Id });
+                    await _notifications.NotifyAsync(post.Owner.Id, user.FullName,
+                        $"{user.FullName} commented on your post", url);
+                }
 
                 return RedirectToAction(nameof(Details), new { id = comment.Post.Id });
             }
@@ -212,12 +222,20 @@
                 reactionType = Tetas.Domain.Helpers.ReactionType.Like;
             }
 
-            if (!await _postRepository.ExistAsync(id))
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null)
             {
                 return NotFound();
             }
 
             var summary = await _postRepository.ToggleReactionAsync(id, user.Id, reactionType);
+
+            if (summary.MyReaction != null && post.Owner != null && post.Owner.Id != user.Id)
+            {
+                var url = Url.Action(nameof(Details), "Posts", new { id = post.Id });
+                await _notifications.NotifyAsync(post.Owner.Id, user.FullName,
+                    $"{user.FullName} reacted to your post", url);
+            }
 
             return Json(new { total = summary.Total, mine = summary.MyReaction?.ToString() });
         }

@@ -126,6 +126,21 @@ namespace Tetas.Web.Models.Api
         public string MyReaction { get; set; }
     }
 
+    public class NotificationDto
+    {
+        public long Id { get; set; }
+
+        public string ActorName { get; set; }
+
+        public string Message { get; set; }
+
+        public string Url { get; set; }
+
+        public bool IsRead { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+    }
+
     public class GroupDto
     {
         public long Id { get; set; }

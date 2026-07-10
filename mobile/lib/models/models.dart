@@ -143,6 +143,35 @@ class ReactionResult {
   }
 }
 
+class AppNotification {
+  final int id;
+  final String? actorName;
+  final String message;
+  final String? url;
+  final bool isRead;
+  final DateTime createdAt;
+
+  AppNotification({
+    required this.id,
+    this.actorName,
+    required this.message,
+    this.url,
+    required this.isRead,
+    required this.createdAt,
+  });
+
+  factory AppNotification.fromJson(Map<String, dynamic> json) {
+    return AppNotification(
+      id: json['id'] as int,
+      actorName: json['actorName'] as String?,
+      message: json['message'] as String? ?? '',
+      url: json['url'] as String?,
+      isRead: json['isRead'] as bool? ?? false,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
+  }
+}
+
 class Group {
   final int id;
   final String name;

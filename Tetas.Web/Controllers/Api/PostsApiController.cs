@@ -24,12 +24,15 @@ namespace Tetas.Web.Controllers.Api
         private readonly IPost _postRepository;
         private readonly IUserHelper _userHelper;
         private readonly IContentSanitizer _sanitizer;
+        private readonly INotificationService _notifications;
 
-        public PostsApiController(IPost postRepository, IUserHelper userHelper, IContentSanitizer sanitizer)
+        public PostsApiController(IPost postRepository, IUserHelper userHelper,
+            IContentSanitizer sanitizer, INotificationService notifications)
         {
             _postRepository = postRepository;
             _userHelper = userHelper;
             _sanitizer = sanitizer;
+            _notifications = notifications;
         }
 
         [HttpGet]
@@ -103,6 +106,12 @@ namespace Tetas.Web.Controllers.Api
 
             await _postRepository.AddCommentAsync(comment);
 
+            if (post.Owner != null && post.Owner.Id != user.Id)
+            {
+                await _notifications.NotifyAsync(post.Owner.Id, user.FullName,
+                    $"{user.FullName} commented on your post", $"/Posts/Details/{post.Id}");
+            }
+
             return Ok(new CommentDto
             {
                 Id = comment.Id,
@@ -117,7 +126,8 @@ namespace Tetas.Web.Controllers.Api
         [HttpPost("{id:long}/reactions")]
         public async Task<ActionResult<ReactionSummaryDto>> React(long id, ReactionRequest request)
         {
-            if (!await _postRepository.ExistAsync(id))
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null)
             {
                 return NotFound();
             }
@@ -129,6 +139,13 @@ namespace Tetas.Web.Controllers.Api
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var summary = await _postRepository.ToggleReactionAsync(id, userId, type);
+
+            if (summary.MyReaction != null && post.Owner != null && post.Owner.Id != userId)
+            {
+                var actor = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                await _notifications.NotifyAsync(post.Owner.Id, actor?.FullName,
+                    $"{actor?.FullName} reacted to your post", $"/Posts/Details/{post.Id}");
+            }
 
             return Ok(new ReactionSummaryDto
             {

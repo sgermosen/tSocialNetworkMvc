@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../state/auth_state.dart';
 import 'feed_tab.dart';
 import 'groups_tab.dart';
 import 'profile_tab.dart';
 import 'create_post_screen.dart';
+import 'notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,7 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_titles[_index])),
+      appBar: AppBar(
+        title: Text(_titles[_index]),
+        actions: const [NotificationBell()],
+      ),
       body: IndexedStack(index: _index, children: _tabs),
       floatingActionButton: _index == 0
           ? FloatingActionButton.extended(
@@ -64,6 +70,50 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Profile'),
         ],
       ),
+    );
+  }
+}
+
+class NotificationBell extends StatefulWidget {
+  const NotificationBell({super.key});
+
+  @override
+  State<NotificationBell> createState() => _NotificationBellState();
+}
+
+class _NotificationBellState extends State<NotificationBell> {
+  int _unread = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final count = await context.read<AuthState>().api.unreadCount();
+      if (mounted) setState(() => _unread = count);
+    } catch (_) {}
+  }
+
+  Future<void> _open() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+    );
+    _load();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: _open,
+      icon: _unread > 0
+          ? Badge(
+              label: Text('$_unread'),
+              child: const Icon(Icons.notifications_outlined),
+            )
+          : const Icon(Icons.notifications_outlined),
     );
   }
 }

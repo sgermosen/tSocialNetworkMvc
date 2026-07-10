@@ -30,6 +30,7 @@ public static class DependeciesContainer
         services.AddScoped<IUserHelper, UserHelper>();
         services.AddScoped<IMailHelper, MailHelper>();
         services.AddSingleton<IContentSanitizer, ContentSanitizer>();
+        services.AddScoped<INotificationService, NotificationService>();
         #endregion
     }
 }

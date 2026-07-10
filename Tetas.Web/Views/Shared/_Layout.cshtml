@@ -80,6 +80,19 @@
                 </button>
                 @if (User.Identity.IsAuthenticated)
                 {
+                    <div class="notif" id="notif">
+                        <button class="icon-btn" id="bellBtn" type="button" aria-label="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="notif-badge" id="notifBadge" hidden>0</span>
+                        </button>
+                        <div class="notif-panel" id="notifPanel" hidden>
+                            <div class="notif-head">
+                                <span>Notifications</span>
+                                <button type="button" class="notif-mark" id="markAllBtn">Mark all read</button>
+                            </div>
+                            <div class="notif-list" id="notifList"></div>
+                        </div>
+                    </div>
                     <div class="dropdown">
                         <a class="user-chip dropdown-toggle" href="#" role="button" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="avatar">@initials</span>
@@ -112,6 +125,11 @@
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <script src="~/lib/fontawesome/js/all.js"></script>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script>window.tetasAuth = true;</script>
+        <script src="~/lib/signalr/signalr.min.js"></script>
+    }
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
