@@ -4,6 +4,7 @@ namespace Tetas.Web.Controllers
     using Domain.Entities;
     using Helpers;
     using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ namespace Tetas.Web.Controllers
     using System.Linq;
     using System.Threading.Tasks;
 
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly IUserHelper _userHelper;
@@ -47,7 +49,8 @@ namespace Tetas.Web.Controllers
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
 
-        public IActionResult Login()
+        [AllowAnonymous]
+        public IActionResult Login(string message)
         {
             //if (!string.IsNullOrEmpty(ErrorMessage))
             //{
@@ -58,6 +61,8 @@ namespace Tetas.Web.Controllers
 
             // Clear the existing external cookie to ensure a clean login process
             // await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            ViewBag.Message = message;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -71,6 +76,7 @@ namespace Tetas.Web.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel login)
         {
@@ -125,12 +131,15 @@ namespace Tetas.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
@@ -191,7 +200,7 @@ namespace Tetas.Web.Controllers
                                                  $"please click on the followed link:</br></br><a href = \"{tokenLink}\">Confirm Email Link</a>");
 
                     }
-                    finally { }
+                    catch { }
 
                     //  ModelState.AddModelError(string.Empty, "The instructions to activate your account was send it to your Email");
 
@@ -205,6 +214,7 @@ namespace Tetas.Web.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
@@ -247,7 +257,7 @@ namespace Tetas.Web.Controllers
                 Phone = user.PhoneNumber,
                 PictureUrl = user.PictureUrl,
                 Email = user.Email,
-                Bio = user.Bio.Replace(Environment.NewLine, "<br />")
+                Bio = (user.Bio ?? string.Empty).Replace(Environment.NewLine, "<br />")
             };
 
             if (User.Identity.Name == id)
@@ -314,6 +324,122 @@ namespace Tetas.Web.Controllers
             }
 
             return View(model);
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Profile", new { id = user.Email });
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var token = await _userHelper.GeneratePasswordResetTokenAsync(user);
+                    var link = Url.Action("ResetPassword", "Account", new
+                    {
+                        token,
+                        email = user.Email
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    try
+                    {
+                        _mailHelper.SendMail(user.Email,
+                            "Tetas Password Reset",
+                            $"<h1>Tetas Password Reset</h1>" +
+                            $"To reset your password please click on the followed link:</br></br>" +
+                            $"<a href = \"{link}\">Reset Password Link</a>");
+                    }
+                    catch { }
+                }
+
+                return RedirectToAction("Login", new { message = "If the email exists, password reset instructions were sent." });
+            }
+
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            var model = new ResetPasswordModel
+            {
+                Token = token,
+                Email = email
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Login", new { message = "Your password has been reset." });
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+
+                    return View(model);
+                }
+
+                return RedirectToAction("Login", new { message = "Your password has been reset." });
+            }
+
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public IActionResult NotAuthorized()
+        {
+            return View();
         }
 
     }

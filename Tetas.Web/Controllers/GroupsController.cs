@@ -2,6 +2,7 @@
 {
     using Domain.Entities;
     using Helpers;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@
     using Tetas.Domain.Helpers;
     using Tetas.Infraestructure;
 
+    [Authorize]
     public class GroupsController : PsBaseController
     {
         private readonly IGroup _groupRepository;

@@ -2,6 +2,7 @@
 
 namespace Tetas.Web.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models;
     using Repositories.Contracts;
@@ -41,11 +42,13 @@ namespace Tetas.Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public ActionResult PostFilter()
+        [Authorize]
+        public async Task<ActionResult> PostFilter()
         {
-            var model = _postRepository.GetPostWithComments("");
-
-            model = model.OrderByDescending(p => p.Date).Take(10);
+            var model = await _postRepository.GetPostWithComments("")
+                .OrderByDescending(p => p.Date)
+                .Take(10)
+                .ToListAsync();
 
             //var modelRet = await model.ToListAsync();
             //var result = RenderRazorViewToString("_NewsPartial", await model.ToListAsync());
@@ -54,15 +57,12 @@ namespace Tetas.Web.Controllers
             return PartialView("_NewsPartial", model);
         }
 
-        public ActionResult GroupsFilter()
+        [Authorize]
+        public async Task<ActionResult> GroupsFilter()
         {
-            //var user = Task.Run(userHelper.GetUserByEmailAsync(User.Identity.Name));
+            var user = await userHelper.GetUserByEmailAsync(User.Identity.Name);
 
-            var model =   _groupRepository.GetPublicAndMyGroupsAsync("af581e6a-e402-4b6e-b03a-69220e2c1e2e");
-            //model = model.OrderByDescending(p => p.CreationDate);
-
-
-            //model = model.Take(10);
+            var model = await _groupRepository.GetPublicAndMyGroupsAsync(user.Id);
 
             return PartialView("_GroupsPartial",  model);
         }

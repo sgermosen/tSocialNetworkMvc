@@ -2,6 +2,7 @@
 {
     using Domain.Entities;
     using Helpers;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Models;
@@ -9,6 +10,7 @@
     using System;
     using System.Threading.Tasks;
 
+    [Authorize]
     public class PostsController : Controller
     {
         private readonly IPost _postRepository;
