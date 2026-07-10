@@ -15,11 +15,13 @@
     {
         private readonly IPost _postRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IContentSanitizer _sanitizer;
 
-        public PostsController(IPost postRepository, IUserHelper userHelper)
+        public PostsController(IPost postRepository, IUserHelper userHelper, IContentSanitizer sanitizer)
         {
             _postRepository = postRepository;
             _userHelper = userHelper;
+            _sanitizer = sanitizer;
         }
         //private readonly IHttpContextAccessor _httpContextAccessor;
         //public OtherClass(IHttpContextAccessor httpContextAccessor)
@@ -60,7 +62,7 @@
                 var comment = new PostComment
                 {
                     Name = vm.Name,
-                    Body = vm.Body,
+                    Body = _sanitizer.Sanitize(vm.Body),
                     Post = post
                 };
                 comment.Owner = user;
@@ -130,7 +132,7 @@
                 {
                     Id = vm.Id,
                     Name = vm.Name,
-                    Body = vm.Body,
+                    Body = _sanitizer.Sanitize(vm.Body),
                     Owner = user,
                     Date = vm.Date,
                     UpdatedDate = DateTime.UtcNow,
@@ -244,6 +246,7 @@
                 }
                 post.Owner = user;
                 post.Date = DateTime.UtcNow;
+                post.Body = _sanitizer.Sanitize(post.Body);
 
                 await _postRepository.AddAsync(post);
 
@@ -286,6 +289,7 @@
             if (ModelState.IsValid)
             {
                 post.UpdatedDate = DateTime.UtcNow;
+                post.Body = _sanitizer.Sanitize(post.Body);
 
                 try
                 {

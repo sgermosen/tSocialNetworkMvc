@@ -24,14 +24,17 @@
         //  private readonly Repository<Privacy> _privacyRepo;
         // private readonly Repository<GroupType> _groupTypeRepo;
         private readonly ApplicationDbContext _context;
+        private readonly IContentSanitizer _sanitizer;
 
         public GroupsController(IUserHelper userHelper,
             IConfiguration configuration,
             IPsSelectList psSelectList,
-            IGroup groupRepository, ApplicationDbContext context) : base(userHelper, configuration, psSelectList)
+            IGroup groupRepository, ApplicationDbContext context,
+            IContentSanitizer sanitizer) : base(userHelper, configuration, psSelectList)
         {
             _groupRepository = groupRepository;
             _context = context;
+            _sanitizer = sanitizer;
             //  _configuration = configuration;
             // _psSelectList = psSelectList;
             // _genericSelectList = new GenericSelectList();
@@ -94,7 +97,7 @@
                 var comment = new GroupPostComment
                 {
                     Name = vm.Name,
-                    Body = vm.Body,
+                    Body = _sanitizer.Sanitize(vm.Body),
                     Post = post,
                     Owner = user,
                     CreationDate = DateTime.UtcNow
@@ -167,7 +170,7 @@
                 var comment = await _groupRepository.GetPostCommentByIdAsync(vm.Id);
 
                 comment.Name = vm.Name;
-                comment.Body = vm.Body;
+                comment.Body = _sanitizer.Sanitize(vm.Body);
                 comment.UpdatedDate = DateTime.UtcNow;
 
                 try
@@ -268,7 +271,7 @@
                 var post = new GroupPost
                 {
                     Name = vm.Name,
-                    Body = vm.Body,
+                    Body = _sanitizer.Sanitize(vm.Body),
                     Group = group
                 };
                 post.Owner = user;
@@ -338,7 +341,7 @@
                 }
 
                 post.Name = vm.Name;
-                post.Body = vm.Body;
+                post.Body = _sanitizer.Sanitize(vm.Body);
                 post.UpdatedDate = DateTime.UtcNow;
 
                 try

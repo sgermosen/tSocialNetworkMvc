@@ -29,6 +29,7 @@ public static class DependeciesContainer
         services.AddScoped<IPsSelectList, PsSelectList>();
         services.AddScoped<IUserHelper, UserHelper>();
         services.AddScoped<IMailHelper, MailHelper>();
+        services.AddSingleton<IContentSanitizer, ContentSanitizer>();
         #endregion
     }
 }

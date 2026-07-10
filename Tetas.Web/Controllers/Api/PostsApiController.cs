@@ -21,11 +21,13 @@ namespace Tetas.Web.Controllers.Api
     {
         private readonly IPost _postRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IContentSanitizer _sanitizer;
 
-        public PostsApiController(IPost postRepository, IUserHelper userHelper)
+        public PostsApiController(IPost postRepository, IUserHelper userHelper, IContentSanitizer sanitizer)
         {
             _postRepository = postRepository;
             _userHelper = userHelper;
+            _sanitizer = sanitizer;
         }
 
         [HttpGet]
@@ -63,7 +65,7 @@ namespace Tetas.Web.Controllers.Api
             var post = new Post
             {
                 Name = request.Name,
-                Body = request.Body,
+                Body = _sanitizer.Sanitize(request.Body),
                 Owner = user,
                 Date = DateTime.UtcNow
             };
@@ -91,7 +93,7 @@ namespace Tetas.Web.Controllers.Api
             var comment = new PostComment
             {
                 Name = request.Name,
-                Body = request.Body,
+                Body = _sanitizer.Sanitize(request.Body),
                 Owner = user,
                 Post = post,
                 Date = DateTime.UtcNow
