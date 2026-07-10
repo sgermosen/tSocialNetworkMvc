@@ -198,6 +198,30 @@
         }
         #endregion
 
+        [HttpPost]
+        public async Task<IActionResult> React(long id, string type)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            if (!Enum.TryParse<Tetas.Domain.Helpers.ReactionType>(type, true, out var reactionType))
+            {
+                reactionType = Tetas.Domain.Helpers.ReactionType.Like;
+            }
+
+            if (!await _postRepository.ExistAsync(id))
+            {
+                return NotFound();
+            }
+
+            var summary = await _postRepository.ToggleReactionAsync(id, user.Id, reactionType);
+
+            return Json(new { total = summary.Total, mine = summary.MyReaction?.ToString() });
+        }
+
         #region Posts
         public async Task<IActionResult> Index()
         {
@@ -206,6 +230,7 @@
             //var userEmail = User.FindFirst(ClaimTypes.Email).Value // will give the user's Email
             ViewBag.Email = User.Identity.Name;
             var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            ViewBag.CurrentUserId = user.Id;
             ViewBag.MyPost = _postRepository.GetPostWithComments(user.Id);
 
             return View();

@@ -135,6 +135,18 @@ class ApiService {
     _fail(response);
   }
 
+  Future<ReactionResult> react(int postId, {String type = 'Like'}) async {
+    final response = await http.post(
+      _uri('/api/posts/$postId/reactions'),
+      headers: _headers(),
+      body: jsonEncode({'type': type}),
+    );
+    if (response.statusCode == 200) {
+      return ReactionResult.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    }
+    _fail(response);
+  }
+
   Future<void> deletePost(int id) async {
     final response = await http.delete(_uri('/api/posts/$id'), headers: _headers());
     if (response.statusCode != 204 && response.statusCode != 200) {

@@ -85,6 +85,8 @@ class Post {
   final String authorName;
   final String authorEmail;
   final bool isMine;
+  final int reactionCount;
+  final String? myReaction;
   final List<Comment> comments;
 
   Post({
@@ -96,8 +98,12 @@ class Post {
     required this.authorName,
     required this.authorEmail,
     required this.isMine,
+    required this.reactionCount,
+    this.myReaction,
     required this.comments,
   });
+
+  bool get iReacted => myReaction != null;
 
   factory Post.fromJson(Map<String, dynamic> json) {
     final commentsJson = (json['comments'] as List<dynamic>?) ?? <dynamic>[];
@@ -112,9 +118,27 @@ class Post {
       authorName: json['authorName'] as String? ?? '',
       authorEmail: json['authorEmail'] as String? ?? '',
       isMine: json['isMine'] as bool? ?? false,
+      reactionCount: json['reactionCount'] as int? ?? 0,
+      myReaction: json['myReaction'] as String?,
       comments: commentsJson
           .map((c) => Comment.fromJson(c as Map<String, dynamic>))
           .toList(),
+    );
+  }
+}
+
+class ReactionResult {
+  final int total;
+  final String? myReaction;
+
+  ReactionResult({required this.total, this.myReaction});
+
+  bool get reacted => myReaction != null;
+
+  factory ReactionResult.fromJson(Map<String, dynamic> json) {
+    return ReactionResult(
+      total: json['total'] as int? ?? 0,
+      myReaction: json['myReaction'] as String?,
     );
   }
 }

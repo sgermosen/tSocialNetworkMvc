@@ -5,6 +5,7 @@ import '../models/models.dart';
 import '../state/auth_state.dart';
 import '../utils/format.dart';
 import '../widgets/avatar.dart';
+import '../widgets/reaction_button.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final int postId;
@@ -112,6 +113,16 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     ],
                     const SizedBox(height: 10),
                     Text(post.body, style: theme.textTheme.bodyLarge),
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: ReactionButton(
+                        key: ValueKey('reaction-${post.id}-${post.reactionCount}-${post.myReaction}'),
+                        postId: post.id,
+                        initialCount: post.reactionCount,
+                        initialReacted: post.iReacted,
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     Text('Comments (${post.comments.length})',
                         style: theme.textTheme.titleMedium

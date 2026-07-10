@@ -50,4 +50,22 @@
             scrim.addEventListener("click", closeSidebar);
         }
     });
+
+    window.tetasReact = function (btn, postId) {
+        var tokenEl = document.querySelector('input[name="__RequestVerificationToken"]');
+        var token = tokenEl ? tokenEl.value : "";
+        btn.disabled = true;
+        fetch("/Posts/React?id=" + postId + "&type=Like", {
+            method: "POST",
+            headers: { "RequestVerificationToken": token }
+        })
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function (data) {
+                btn.classList.toggle("reacted", !!data.mine);
+                var countEl = btn.querySelector(".react-count");
+                if (countEl) { countEl.textContent = data.total; }
+            })
+            .catch(function () {})
+            .finally(function () { btn.disabled = false; });
+    };
 })();

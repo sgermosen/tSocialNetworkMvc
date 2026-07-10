@@ -1,6 +1,7 @@
 namespace Tetas.Web.Controllers.Api
 {
     using Domain.Entities;
+    using Domain.Helpers;
     using Helpers;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Tetas.Web.Controllers.Api
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using Tetas.Web.Models.Api;
 
@@ -112,6 +114,29 @@ namespace Tetas.Web.Controllers.Api
             });
         }
 
+        [HttpPost("{id:long}/reactions")]
+        public async Task<ActionResult<ReactionSummaryDto>> React(long id, ReactionRequest request)
+        {
+            if (!await _postRepository.ExistAsync(id))
+            {
+                return NotFound();
+            }
+
+            if (!Enum.TryParse<ReactionType>(request?.Type, true, out var type))
+            {
+                type = ReactionType.Like;
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var summary = await _postRepository.ToggleReactionAsync(id, userId, type);
+
+            return Ok(new ReactionSummaryDto
+            {
+                Total = summary.Total,
+                MyReaction = summary.MyReaction?.ToString()
+            });
+        }
+
         [HttpDelete("{id:long}")]
         public async Task<IActionResult> Delete(long id)
         {
@@ -135,6 +160,9 @@ namespace Tetas.Web.Controllers.Api
         private PostDto ToDto(Post post)
         {
             var me = User.Identity.Name;
+            var myId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var reactions = post.Reactions ?? new List<Reaction>();
+            var myReaction = reactions.FirstOrDefault(r => r.OwnerId == myId);
             return new PostDto
             {
                 Id = post.Id,
@@ -145,6 +173,8 @@ namespace Tetas.Web.Controllers.Api
                 AuthorName = post.Owner?.FullName,
                 AuthorEmail = post.Owner?.Email,
                 IsMine = post.Owner?.Email == me,
+                ReactionCount = reactions.Count,
+                MyReaction = myReaction?.Type.ToString(),
                 Comments = (post.PostComments ?? Enumerable.Empty<PostComment>())
                     .Select(c => new CommentDto
                     {

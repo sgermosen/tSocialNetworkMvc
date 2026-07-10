@@ -438,6 +438,27 @@ pre {
     color: var(--danger);
 }
 
+button.post-action {
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+button.post-action:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.post-action.reacted {
+    color: var(--danger);
+}
+
+.post-action.reacted:hover {
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
 .comment {
     display: flex;
     gap: 0.7rem;

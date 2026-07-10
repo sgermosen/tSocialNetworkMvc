@@ -45,6 +45,9 @@ namespace Tetas.Web.Controllers
         [Authorize]
         public async Task<ActionResult> PostFilter()
         {
+            var user = await userHelper.GetUserByEmailAsync(User.Identity.Name);
+            ViewBag.CurrentUserId = user?.Id;
+
             var model = await _postRepository.GetPostWithComments("")
                 .OrderByDescending(p => p.Date)
                 .Take(10)

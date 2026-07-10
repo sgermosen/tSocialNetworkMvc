@@ -42,6 +42,7 @@ namespace Tetas.Infraestructure
             modelBuilder.ApplyConfiguration(new GroupTypeConfig());
             modelBuilder.ApplyConfiguration(new PostCommentConfig());
             modelBuilder.ApplyConfiguration(new PrivacyConfig());
+            modelBuilder.ApplyConfiguration(new ReactionConfig());
 
             //  new ApplicationUserConfig(modelBuilder.Entity<ApplicationUser>());
             //new OwnerConfig(modelBuilder.Entity<Owner>());
@@ -71,6 +72,7 @@ namespace Tetas.Infraestructure
             modelBuilder.Entity<GroupPostComment>().HasQueryFilter(x => !x.Deleted);
             modelBuilder.Entity<GroupType>().HasQueryFilter(x => !x.Deleted);
             modelBuilder.Entity<Privacy>().HasQueryFilter(x => !x.Deleted);
+            modelBuilder.Entity<Reaction>().HasQueryFilter(x => !x.Post.Deleted);
             #endregion
         }
 
@@ -91,6 +93,8 @@ namespace Tetas.Infraestructure
         public DbSet<PostComment> PostComments { get; set; }
 
         public DbSet<Privacy> Privacies { get; set; }
+
+        public DbSet<Reaction> Reactions { get; set; }
 
     }
 }

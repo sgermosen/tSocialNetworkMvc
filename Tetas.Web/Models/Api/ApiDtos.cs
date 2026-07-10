@@ -107,7 +107,23 @@ namespace Tetas.Web.Models.Api
 
         public bool IsMine { get; set; }
 
+        public int ReactionCount { get; set; }
+
+        public string MyReaction { get; set; }
+
         public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
+    }
+
+    public class ReactionRequest
+    {
+        public string Type { get; set; }
+    }
+
+    public class ReactionSummaryDto
+    {
+        public int Total { get; set; }
+
+        public string MyReaction { get; set; }
     }
 
     public class GroupDto

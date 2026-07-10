@@ -1,6 +1,7 @@
 ﻿namespace Tetas.Repositories.Contracts
 {
     using Domain.Entities;
+    using Domain.Helpers;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -9,6 +10,10 @@
         IQueryable<Post> GetPostWithComments(string userid);
 
         Task<Post> GetPostByIdAsync(long id);
+
+        Task<ReactionSummary> ToggleReactionAsync(long postId, string userId, ReactionType type);
+
+        Task<ReactionSummary> GetReactionSummaryAsync(long postId, string userId);
 
         Task<PostComment> GetPostCommentByIdAsync(long id);
 

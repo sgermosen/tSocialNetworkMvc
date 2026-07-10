@@ -22,5 +22,7 @@ namespace Tetas.Domain.Entities
 
         public IEnumerable<PostComment> PostComments { get; set; }
 
+        public ICollection<Reaction> Reactions { get; set; }
+
     }
 }

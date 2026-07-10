@@ -1,6 +1,7 @@
 @model IEnumerable<Tetas.Domain.Entities.Post>
 @{
     string Initial(string name) => string.IsNullOrEmpty(name) ? "?" : name.Substring(0, 1).ToUpper();
+    var currentUserId = ViewBag.CurrentUserId as string;
 }
 
 <div class="row-gap" style="margin-bottom: 1.2rem;">
@@ -40,6 +41,14 @@ else
             <div class="post-body"><pre>@Html.Raw(item.Body)</pre></div>
 
             <div class="post-actions">
+                @{
+                    var reactionCount = item.Reactions?.Count ?? 0;
+                    var iReacted = item.Reactions != null && !string.IsNullOrEmpty(currentUserId)
+                        && item.Reactions.Any(r => r.OwnerId == currentUserId);
+                }
+                <button type="button" class="post-action @(iReacted ? "reacted" : "")" onclick="tetasReact(this, @item.Id)">
+                    <i class="fas fa-heart"></i> <span class="react-count">@reactionCount</span>
+                </button>
                 <a class="post-action" asp-action="Comment" asp-controller="Posts" asp-route-id="@item.Id">
                     <i class="far fa-comment"></i> Comment
                 </a>
