@@ -1,245 +1,80 @@
-﻿@using Tetas.Domain.Entities
+@using Tetas.Domain.Entities
 @using Tetas.Common.ViewModels
 @{
-    ViewData["Title"] = "Tetas";
-
-    var categoryList2 = ViewBag.Categories2;
-
+    ViewData["Title"] = User.Identity.IsAuthenticated ? "Home" : "Welcome";
     var postList = new List<Post>();
-
-    var groupList = new List<GroupModel>();
 }
 
-
-@if (!this.User.Identity.IsAuthenticated)
+@if (!User.Identity.IsAuthenticated)
 {
-    <div class="text-success">
+    @if (!string.IsNullOrEmpty(ViewBag.Message as string))
+    {
+        <div class="alert alert-success">@ViewBag.Message</div>
+    }
+
+    <section class="hero">
+        <span class="eyebrow">Open source · For education</span>
+        <h1>The social network built for teachers and students.</h1>
         <p>
-            @ViewBag.Message
+            Tetas is an open source social platform for building all kinds of academic
+            communities — a campus-wide network for your university, a collaboration
+            space for your organization, or a place to keep learning and professional
+            circles connected without mixing them with your personal life.
         </p>
-    </div>
-    <div class="text-center">
-        <h1 class="display-4">Tracking Education For Teachers and Students</h1>
-        <p style="text-align: justify; font-size: large">
-
-            Is an open source social networking web application that provides a robust app on which to build all kinds of social environments, from a campus wide social network for your university, school or college or an internal collaborative platform for your organization through to a brand-building communications tool for your company and its clients. But the main goal is communicate teachers and student than need to be connected but don’t want to mix personal and professional environments.
-
-            If you want to see the introduction of a mini-course that I prepared, check this video:
-            <br /> <br />
-            <a href="https://www.youtube.com/watch?v=-E-rAqeGKp4&t=69s&list=PLE4SNWIDX7wtQd3fA5Aa6cJExKaruJ19C&index=2">
-                https://www.youtube.com/watch?v=-E-rAqeGKp4&t=69s&list=PLE4SNWIDX7wtQd3fA5Aa6cJExKaruJ19C&index=2
+        <div class="hero-cta">
+            <a class="btn btn-primary" asp-controller="Account" asp-action="Register">
+                <i class="fas fa-user-plus"></i> Create your account
             </a>
-        </p>
+            <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">
+                Log in
+            </a>
+        </div>
+    </section>
+
+    <div class="feature-grid">
+        <div class="feature">
+            <i class="fas fa-pen-nib"></i>
+            <h3>Share posts</h3>
+            <p>Publish, edit and discuss ideas with your academic community.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-users"></i>
+            <h3>Build groups</h3>
+            <p>Create public or private groups for classes, clubs and projects.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-comments"></i>
+            <h3>Stay connected</h3>
+            <p>Comment, moderate and keep the conversation going with peers.</p>
+        </div>
     </div>
 }
 else
 {
-
-    ViewData["Title"] = "Home";
-
-    <div>
-        <h3> Latest Post</h3>
-
-        <div id="tableHolder">
-            <partial name="_NewsPartial" model="postList" />
-        </div>
+    <div class="page-head">
+        <h1>Latest posts</h1>
+        <p>The most recent activity from your network.</p>
     </div>
 
-    @*<div>
-        <h3> Dernier On Your Groups</h3>
-        <div id="tableHolder">
-            <partial name="_GroupsPartial" model="groupList" />
-        </div>
+    <div id="newsContent">
+        <partial name="_NewsPartial" model="postList" />
     </div>
-
-    <div>
-        <h3> Today Events</h3>
-        <div id="tableHolder">
-            <partial name="_NewsPartial" model="postList" />
-        </div>
-    </div>
-
-    <div>
-        <h3> Dont Forget Those Celebrations</h3>
-        <div id="tableHolder">
-            <partial name="_NewsPartial" model="postList" />
-        </div>
-    </div>
-
-    <div>
-        <h3> Pending Chats</h3>
-        <div id="tableHolder">
-            <partial name="_NewsPartial" model="postList" />
-        </div>
-    </div>*@
-    @*<div>
-        <h5>Icons to implement (done here because i dont want to lose time each time that i want to implement a fontawsome icons)</h5>
-        <i class="fab fa-discourse fa-5x"></i>
-        <i class="far fa-frown-open fa-5x"></i>
-        <i class="fas fa-gift fa-5x"></i>
-        <i class="far fa-meh fa-5x"></i>
-        <i class="fas fa-meh-blank fa-5x"></i>
-        <i class="fas fa-marker fa-5x"></i>
-        <i class="far fa-meh-rolling-eyes fa-5x"></i>
-        <i class="fas fa-praying-hands fa-5x"></i>
-        My Students after fail a test XD
-        <i class="fas fa-pray fa-5x"></i>
-        <i class="fas fa-receipt fa-5x"></i>
-        <i class="fas fa-random fa-5x"></i>
-        <i class="fas fa-reply fa-5x"></i>
-        <i class="fas fa-reply-all fa-5x"></i>
-        <i class="fas fa-retweet fa-5x"></i>
-        <i class="far fa-sad-tear fa-5x"></i>
-        <i class="fas fa-share-alt fa-5x"></i>
-        <i class="far fa-handshake fa-5x"></i>
-        <i class="far fa-hand-peace fa-5x"></i>
-        <i class="fas fa-hand-middle-finger fa-5x"></i>
-        <i class="far fa-grin-tears fa-5x"></i>
-        <i class="far fa-grin-squint-tears fa-5x"></i>
-        <i class="far fa-grin-hearts fa-5x"></i>
-        <i class="fas fa-glasses fa-5x"></i>
-        <i class="fas fa-feather fa-5x"></i>
-        <i class="fas fa-eye fa-5x"></i>
-        <i class="far fa-edit fa-5x"></i>
-        <i class="fab fa-angellist fa-5x"></i>
-        <i class="fas fa-asterisk fa-5x"></i>
-        <i class="fab fa-bity fa-5x"></i>
-        <i class="fab fa-black-tie fa-5x"></i>
-        <i class="fas fa-bolt fa-5x"></i>
-        <i class="fas fa-signature fa-5x"></i>
-        <i class="fas fa-sign-out-alt fa-5x"></i>
-        <i class="fas fa-sign-in-alt fa-5x"></i>
-        <i class="fas fa-sign fa-5x"></i>
-        <i class="fas fa-shipping-fast fa-5x"></i>
-        <i class="far fa-smile-beam fa-5x"></i>
-        <i class="fas fa-spinner fa-5x"></i><i class="fas fa-step-backward fa-5x"></i><i class="far fa-sticky-note fa-5x"></i><i class="fas fa-bomb fa-5x"></i>
-        <i class="fas fa-certificate fa-5x"></i>
-        <i class="fas fa-circle-notch fa-5x"></i>
-        <i class="far fa-atom-alt fa-5x"></i>
-        <i class="fas fa-tasks fa-5x"></i>
-        <i class="fas fa-thumbtack fa-5x"></i>
-        <i class="fas fa-toilet fa-5x"></i>
-        <i class="fas fa-user-md fa-5x"></i><i class="fas fa-users fa-5x"></i><i class="fas fa-user-minus fa-5x"></i><i class="fas fa-user-plus fa-5x"></i><i class="fas fa-user-edit fa-5x"></i>
-        <i class="fas fa-times fa-5x"></i><i class="fas fa-users-cog fa-5x"></i><i class="fas fa-user-friends fa-5x"></i>
-        <i class="fas fa-user-nurse fa-5x"></i>
-        <i class="fas fa-user-cog fa-5x"></i><i class="fas fa-user-alt-slash fa-5x"></i><i class="fas fa-user fa-5x"></i><i class="fas fa-universal-access fa-5x"></i>
-        <i class="far fa-times-circle fa-5x"></i><i class="fas fa-thumbtack fa-5x"></i>
-        <i class="fas fa-tools fa-5x"></i><i class="fas fa-mobile-alt fa-5x"></i>
-        <i class="fas fa-exclamation fa-5x"></i><i class="fas fa-check fa-5x"></i><i class="fas fa-diagnoses fa-5x"></i>
-        <i class="fas fa-donate fa-5x"></i>
-        <i class="fas fa-vote-yea fa-5x"></i>
-        <i class="fas fa-quote-left fa-5x"></i>
-        <i class="fas fa-quote-right fa-5x"></i>
-        <i class="fas fa-exclamation-triangle fa-5x"></i><i class="far fa-dot-circle fa-5x"></i>
-        <i class="fas fa-notes-medical fa-5x"></i><i class="fas fa-book-open fa-5x"></i>
-        <i class="fas fa-hand-holding-usd fa-5x"></i><i class="fas fa-money-check fa-5x"></i><i class="fas fa-dollar-sign fa-5x"></i><i class="fas fa-hand-holding-usd fa-5x"></i>
-        <i class="fas fa-file-invoice-dollar fa-5x"></i><i class="far fa-money-bill-alt fa-5x"></i><i class="fas fa-money-check-alt fa-5x"></i><i class="fas fa-money-bill-wave fa-5x"></i>
-        <i class="fas fa-poop fa-5x"></i><i class="fas fa-poo-storm fa-5x"></i><i class="fas fa-pencil-alt fa-5x"></i><i class="far fa-hand-point-up fa-5x"></i>
-        <i class="far fa-hand-point-down fa-5x"></i><i class="fas fa-hospital-symbol fa-5x"></i><i class="fas fa-hashtag fa-5x"></i>
-        <i class="fas fa-procedures fa-5x"></i><i class="far fa-hand-point-left fa-5x"></i><i class="far fa-comments fa-5x"></i>
-        <i class="far fa-comment-alt fa-5x"></i><i class="fas fa-comment-medical fa-5x"></i>
-        <i class="fas fa-comments-dollar fa-5x"></i>
-        <i class="far fa-comment-dots fa-5x"></i><i class="fas fa-comment-dollar fa-5x"></i><i class="far fa-trash-alt fa-5x"></i>
-        <i class="fas fa-pills fa-5x"></i><i class="fas fa-trophy fa-5x"></i><i class="fas fa-tv fa-5x"></i><i class="fas fa-laptop fa-5x"></i><i class="far fa-database fa-5x"></i><i class="far fa-desktop fa-5x"></i>
-        <i class="fas fa-download fa-5x"></i><i class="far fa-server fa-5x"></i><i class="fal fa-tv-retro fa-5x"></i><i class="fal fa-upload fa-5x"></i><i class="fas fa-brackets-curly fa-5x"></i><i class="fas fa-brackets fa-5x"></i>
-        <i class="far fa-save fa-5x"></i><i class="fas fa-file-alt fa-5x"></i><i class="fal fa-file fa-5x"></i><i class="far fa-file-excel fa-5x"></i><i class="fas fa-file-image fa-5x"></i><i class="far fa-folder fa-5x"></i><i class="far fa-folder-open fa-5x"></i><i class="fal fa-comment-alt-edit fa-5x"></i><i class="fal fa-comment-alt-exclamation fa-5x"></i><i class="far fa-comment-alt-lines fa-5x"></i><i class="far fa-comment-alt-smile fa-5x"></i><i class="far fa-comment-alt-times fa-5x"></i><i class="far fa-comment-edit fa-5x"></i><i class="fas fa-comment-slash fa-5x"></i>
-        <i class="far fa-surprise fa-5x"></i>
-
-
-    </div>*@
-
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 
     @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
-
-    <script>
-        var url = '@Url.Action("PostFilter", "Home")';
-
-        $(document).ready(function () {
-
-         //   $('#BtnSearch').click(function(e) {
-
-                //opParam: $('input[type=radio]:checked').val(),
-                //    param: $('#option0').val()
-                //$(function () {
-                //    $('#load').on('click', function () {
-                //        $('#grid').load('/ajaxpartial?handler=PostFilter');
-                //    });
-                //});
-
-                //data: {opParam: $("#Insurances option:selected").val(),
-                //        category: $("#Categories option:selected").val(),
-                //        fromDate: $('#FromDate').val(),
-                //        toDate: $('#ToDate').val()
-
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            $(document).ready(function () {
                 $.ajax({
-                    type: "POST",
-                    url: url, //call your controller and action
-                    data: {},
+                    type: "GET",
+                    url: '@Url.Action("PostFilter", "Home")',
                     success: function (data) {
-
-                        if (data != null && (data.errorMessage == null || data.errorMessage === "")) {
-
-                            $('#newsContent').html(data);
-                            // Get the file name for download
-                            //if (data.fileName != "")
-                            //{
-                            //    // use window.location.href for redirect to download action for download the file
-                            //   // window.location.href = url2 + "/?file=" + data.fileName;
-                            //}
-
-                        }
-                        else {
-                            alert("An error ocurred", data.errorMessage);
-                        }
-
-                       // enableAllButtons();
+                        $('#newsContent').html(data);
                     },
-                    failure: function() {
-                      //  enableAllButtons();
-                        console.log("problems retriving post data");
+                    error: function () {
+                        console.log("problems retrieving post data");
                     }
                 });
-                //$.get($(this).attr('href'),
-                //    {
-                //    },
-                //    function(result) {
-                //        // console.log(result);
-                //        $('#tableHolder').html(result.Table);
-                //        $('#newsTable').DataTable({
-                //            "searching": false
-                //        });
-                //    },
-                //    'json');
-            //});
-
-            @*url = '@Url.Action("GroupsFilter", "Home")';
-            $.ajax({
-                type: "POST",
-                url: url, //call your controller and action
-                data: {},
-                success: function (data) {
-
-                    if (data != null && (data.errorMessage == null || data.errorMessage === "")) {
-
-                        $('#groupsContent').html(data);
-                       }
-                    else {
-                        alert("An error ocurred", data.errorMessage);
-                    }
-
-                },
-                failure: function() {
-                    console.log("problems retriving group data");
-                }
-            });*@
-
-       });
-
-
-
-    </script>
+            });
+        </script>
+    }
 }
-

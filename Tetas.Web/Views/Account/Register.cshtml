@@ -1,83 +1,70 @@
-﻿@model Tetas.Common.ViewModels.RegisterModel
+@model Tetas.Common.ViewModels.RegisterModel
 
 @{
     ViewData["Title"] = "Register";
 }
 
-<div class="row">
-    <div class="col-md-12">
+<div class="form-wide">
+    <div class="auth-card">
+        <h1>Create your account</h1>
+        <p class="auth-sub">Join the Tetas community in a minute.</p>
+
         <form method="post">
-            <div asp-validation-summary="ModelOnly"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group col-md-4">
-                <label asp-for="FirstName">First Name</label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-warning"></span>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label asp-for="FirstName"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="LastName"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="NickName"></label>
+                    <input asp-for="NickName" class="form-control" />
+                    <span asp-validation-for="NickName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Phone"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-12">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Confirm"></label>
+                    <input asp-for="Confirm" type="password" class="form-control" />
+                    <span asp-validation-for="Confirm" class="text-danger"></span>
+                </div>
             </div>
 
-            <div class="form-group col-md-4">
-                <label asp-for="LastName">Last Name</label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-warning"></span>
-            </div>
+            <button type="submit" class="btn btn-primary">Register as new user</button>
 
-            <div class="form-group col-md-4">
-                <label asp-for="NickName">Nick Name</label>
-                <input asp-for="NickName" class="form-control" />
-                <span asp-validation-for="NickName" class="text-warning"></span>
-            </div>
-
-            <div class="form-group col-md-4">
-                <label asp-for="Phone">Phone</label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-warning"></span>
-            </div>
-
-            <div class="form-group col-md-4">
-                <label asp-for="Email">Email</label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-warning"></span>
-            </div>
-
-            <div class="form-group col-md-4">
-                <label asp-for="Password">Password</label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-warning"></span>
-            </div>
-
-            <div class="form-group col-md-4">
-                <label asp-for="Confirm">Password Confirmation</label>
-                <input asp-for="Confirm" type="password" class="form-control" />
-                <span asp-validation-for="Confirm" class="text-warning"></span>
-            </div>
-            <br /><br />
-            <div class="form-group">
-                <input type="submit" value="Register as New User" class="btn btn-success" />
-                @*Or
-                <input type="submit" value="Register With GitHub" class="btn btn-secondary" />
-                <input type="submit" value="Register With Outlook" class="btn btn-primary" />
-                <input type="submit" value="Register With Gmail" class="btn btn-danger" />*@
-
-            </div>
-            <p>
-                By clicking on "Register", you accept our Conditions,
-                the Data Policy and the Cookies Policy.
-                We may send you notifications by Email,
-                which you can deactivate whenever you want.
+            <p class="text-muted" style="margin-top:1rem; font-size:0.85rem;">
+                By clicking on "Register", you accept our Conditions, the Data Policy and the
+                Cookies Policy. We may send you notifications by email, which you can deactivate
+                whenever you want.
             </p>
-            <p>
-                <a asp-area=""
-                   asp-controller="Account"
-                   asp-action="Login"
-                   class="list-group-item list-group-item-action bg-light">You all ready have an Account? Login/Connect</a>
-
-                @*<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>*@
-            </p>
+            <div class="auth-alt">
+                Already have an account?
+                <a asp-controller="Account" asp-action="Login">Log in</a>
+            </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }
-
