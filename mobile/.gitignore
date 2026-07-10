@@ -9,3 +9,12 @@ pubspec.lock
 *.iml
 .idea/
 .vscode/
+
+android/.gradle/
+android/local.properties
+android/key.properties
+android/app/debug/
+android/app/profile/
+android/app/release/
+**/GeneratedPluginRegistrant.*
+.gradle/
