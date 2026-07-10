@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  backend:
+    name: Backend (.NET 10)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore Tetas.sln
+
+      - name: Build
+        run: dotnet build Tetas.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Tetas.sln --configuration Release --no-build --verbosity normal
+
+  mobile:
+    name: Mobile (Flutter)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Get dependencies
+        working-directory: mobile
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: mobile
+        run: flutter analyze
+
+      - name: Test
+        working-directory: mobile
+        run: flutter test

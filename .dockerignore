@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.idea/
+_Legacy/
+mobile/
+Tetas.Tests/
+*.db
+*.db-shm
+*.db-wal
+.git/
+.github/

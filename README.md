@@ -65,9 +65,14 @@ The application was modernized from ASP.NET Core 2.2 to **.NET 10**.
 * **Mobile:** a Flutter client in `mobile/` that consumes the REST API
 
 The solution keeps a layered structure: `Tetas.Domain` (entities),
-`Tetas.Infraestructure` (DbContext, configurations, seeding),
-`Tetas.Repositories` (data access), `Tetas.Common` (view models) and
-`Tetas.Web` (MVC + API).
+`Tetas.Infraestructure` (DbContext, configurations, migrations, seeding),
+`Tetas.Repositories` (data access), `Tetas.Common` (view models),
+`Tetas.Web` (MVC + API + SignalR) and `Tetas.Tests` (xUnit tests).
+
+Highlights of the 2026 modernization: post reactions, realtime notifications
+over SignalR, HTML sanitization against stored XSS, JWT-secured REST API,
+EF Core migrations, a themeable redesigned UI, a Flutter client, a test
+suite, CI and Docker support.
 
 # Getting Started
 
@@ -87,6 +92,25 @@ console (for example `http://localhost:5000`).
 
 To use SQL Server instead, set `DatabaseProvider` to `SqlServer` and provide
 the `sGDatabaseCnn` connection string in configuration.
+
+## Run with Docker
+
+```bash
+docker compose up --build
+```
+
+The app is served on `http://localhost:8080` and the SQLite database is kept
+in a named volume.
+
+## Tests
+
+```bash
+dotnet test          # backend unit and integration tests
+cd mobile && flutter test   # mobile widget tests
+```
+
+A GitHub Actions workflow (`.github/workflows/ci.yml`) builds and tests both
+the backend and the Flutter app on every push.
 
 ## Configuration and secrets
 
@@ -114,8 +138,11 @@ The main endpoints are:
 | GET    | `/api/posts/{id}`             | A single post with comments     |
 | POST   | `/api/posts`                  | Create a post                   |
 | POST   | `/api/posts/{id}/comments`    | Comment on a post               |
+| POST   | `/api/posts/{id}/reactions`   | React to a post (toggle)        |
 | DELETE | `/api/posts/{id}`             | Delete your post                |
 | GET    | `/api/groups`                 | Public and joined groups        |
+| GET    | `/api/notifications`          | Your notifications              |
+| POST   | `/api/notifications/read-all` | Mark all notifications read     |
 
 All routes except register and login require an `Authorization: Bearer <token>`
 header.

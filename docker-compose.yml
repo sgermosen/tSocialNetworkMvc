@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SqliteCnn=Data Source=/app/data/tetas.db
+    volumes:
+      - tetas-data:/app/data
+
+volumes:
+  tetas-data:
