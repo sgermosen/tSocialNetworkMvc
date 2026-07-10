@@ -113,6 +113,18 @@ namespace Tetas.Web
             {
                 options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ApiClients", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
+            services.AddOpenApi();
         }
 
         private static void ConfigurePipeline(WebApplication app)
@@ -120,6 +132,7 @@ namespace Tetas.Web
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.MapOpenApi();
             }
             else
             {
@@ -136,13 +149,18 @@ namespace Tetas.Web
                 await next();
             });
 
-            app.UseStatusCodePagesWithReExecute("/error/{0}");
+            app.UseWhen(
+                context => !context.Request.Path.StartsWithSegments("/api"),
+                branch => branch.UseStatusCodePagesWithReExecute("/error/{0}"));
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors("ApiClients");
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapControllers();
 
             app.MapControllerRoute(
                 name: "areas",
