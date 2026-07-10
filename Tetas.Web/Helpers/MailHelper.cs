@@ -21,15 +21,15 @@
             var password = _configuration["Mail:Password"];
 
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(from));
-            message.To.Add(new MailboxAddress(to));
+            message.From.Add(MailboxAddress.Parse(from));
+            message.To.Add(MailboxAddress.Parse(to));
             message.Subject = subject;
             var bodyBuilder = new BodyBuilder {HtmlBody = body};
             message.Body = bodyBuilder.ToMessageBody();
 
             using (var client = new SmtpClient())
             {
-                client.Connect(smtp, int.Parse(port), false);
+                client.Connect(smtp, int.Parse(port), MailKit.Security.SecureSocketOptions.StartTls);
                 client.Authenticate(from, password);
                 client.Send(message);
                 client.Disconnect(true);
