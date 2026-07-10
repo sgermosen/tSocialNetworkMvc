@@ -54,11 +54,77 @@ If you want to see the introduction of a mini-course that I prepared, check this
   ![Screenshot](6Post.png)
 
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+# Tech stack
 
- 
+The application was modernized from ASP.NET Core 2.2 to **.NET 10**.
+
+* **Web:** ASP.NET Core 10 MVC (`Tetas.Web`)
+* **Data:** Entity Framework Core 10 with ASP.NET Core Identity
+* **Database:** SQLite by default (zero setup), SQL Server optional
+* **API:** JWT-secured REST endpoints under `/api` for mobile/SPA clients
+* **Mobile:** a Flutter client in `mobile/` that consumes the REST API
+
+The solution keeps a layered structure: `Tetas.Domain` (entities),
+`Tetas.Infraestructure` (DbContext, configurations, seeding),
+`Tetas.Repositories` (data access), `Tetas.Common` (view models) and
+`Tetas.Web` (MVC + API).
+
+# Getting Started
+
+## Requirements
+
+* [.NET SDK 10](https://dotnet.microsoft.com/download)
+
+## Run the web app
+
+```bash
+dotnet run --project Tetas.Web
+```
+
+The app uses SQLite out of the box and creates a local `tetas.db` on first
+run, so no database server is required. Browse to the URL printed in the
+console (for example `http://localhost:5000`).
+
+To use SQL Server instead, set `DatabaseProvider` to `SqlServer` and provide
+the `sGDatabaseCnn` connection string in configuration.
+
+## Configuration and secrets
+
+No secrets are committed to this repository. For production set the JWT
+signing key and mail credentials through user secrets or environment
+variables, for example:
+
+```bash
+dotnet user-secrets set "Tokens:Key" "<a-long-random-secret>" --project Tetas.Web
+```
+
+In development a random signing key is generated at startup if none is
+configured.
+
+## REST API
+
+When running in development an OpenAPI document is served at
+`/openapi/v1.json`. The main endpoints are:
+
+| Method | Route                         | Description                     |
+| ------ | ----------------------------- | ------------------------------- |
+| POST   | `/api/auth/register`          | Register and receive a JWT      |
+| POST   | `/api/auth/login`             | Log in and receive a JWT        |
+| GET    | `/api/auth/me`                | Current user (bearer required)  |
+| GET    | `/api/posts`                  | Latest posts feed               |
+| GET    | `/api/posts/{id}`             | A single post with comments     |
+| POST   | `/api/posts`                  | Create a post                   |
+| POST   | `/api/posts/{id}/comments`    | Comment on a post               |
+| DELETE | `/api/posts/{id}`             | Delete your post                |
+| GET    | `/api/groups`                 | Public and joined groups        |
+
+All routes except register and login require an `Authorization: Bearer <token>`
+header.
+
+## Mobile app
+
+A Flutter client lives in [`mobile/`](mobile/README.md). It authenticates
+against the REST API and provides the feed, post details, commenting, post
+creation, groups and profile. See its README to run it and point it at your
+API instance.
+
