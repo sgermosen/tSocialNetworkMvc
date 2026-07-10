@@ -123,8 +123,6 @@ namespace Tetas.Web
                         .AllowAnyMethod();
                 });
             });
-
-            services.AddOpenApi();
         }
 
         private static void ConfigurePipeline(WebApplication app)
@@ -132,7 +130,6 @@ namespace Tetas.Web
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.MapOpenApi();
             }
             else
             {

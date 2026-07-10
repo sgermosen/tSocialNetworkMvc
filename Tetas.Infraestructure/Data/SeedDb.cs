@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Domain.Entities;
+    using Microsoft.EntityFrameworkCore;
 
     public class SeedDb
     {
@@ -17,7 +18,7 @@
         }
         public async Task SeedAsync()
         {
-            await _context.Database.EnsureCreatedAsync();
+            await _context.Database.MigrateAsync();
                         
             if (!_context.GroupTypes.Any())
             {

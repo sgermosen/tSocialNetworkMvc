@@ -103,8 +103,7 @@ configured.
 
 ## REST API
 
-When running in development an OpenAPI document is served at
-`/openapi/v1.json`. The main endpoints are:
+The main endpoints are:
 
 | Method | Route                         | Description                     |
 | ------ | ----------------------------- | ------------------------------- |
