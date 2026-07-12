@@ -307,7 +307,7 @@ gratuita, y acepta las políticas.
 | Recurso | Especificación |
 |---------|----------------|
 | Ícono | 512×512 PNG (32 bits, con alfa). |
-| Gráfico destacado (*feature graphic*) | 1024×500 PNG/JPG, **sin** transparencia. |
+| Gráfico destacado (*feature graphic*) | 1024×500 PNG/JPG, **sin** transparencia. Listo en `docs/store-assets/feature-graphic.png`. |
 | Capturas de teléfono | 2–8 imágenes, PNG/JPEG 24-bit, relación 9:16 o 16:9, cada lado entre 320 y 3840 px. |
 | Capturas de tablet (opcional) | Solo si marcas soporte de tablet. |
 
@@ -425,10 +425,10 @@ En *App Store Connect → App Privacy*. Coherente con §3.8:
 ### 4.7 Clasificación por edad
 
 Cuestionario de *Age Rating*: sin contenido explícito → **No** a violencia,
-sexo, drogas, apuestas. Al haber **contenido generado por usuarios sin
-restricción**, Apple suele fijar **17+** salvo que implementes moderación,
-bloqueo/denuncia y filtrado. Recomendado añadir denuncia/bloqueo para bajar la
-edad; mientras tanto, declara UGC con honestidad.
+sexo, drogas, apuestas. Hay **contenido generado por usuarios**, pero la app
+**ya incluye moderación** (denunciar publicaciones y bloquear usuarios), así
+que puedes declararlo y mantener una clasificación más baja (típicamente
+**12+**). Declara el UGC y sus controles con honestidad.
 
 ### 4.8 Cumplimiento de exportación (cifrado)
 
@@ -448,10 +448,11 @@ estándar exento**; añade en `Info.plist`:
 
 ### 4.10 Errores comunes de rechazo (evítalos)
 
-- **UGC sin moderación:** Apple exige, para apps con contenido de usuarios,
-  (a) filtro de contenido objetable, (b) mecanismo de **denuncia**, (c)
-  **bloqueo** de usuarios y (d) contacto del desarrollador. Impleméntalos si
-  quieres una edad menor y evitar rechazos.
+- **UGC — requisitos de Apple:** para apps con contenido de usuarios exige
+  (a) filtro de contenido objetable, (b) **denuncia**, (c) **bloqueo** de
+  usuarios y (d) contacto del desarrollador. La app **ya implementa denuncia y
+  bloqueo**; asegúrate de responder los reportes y de publicar un correo de
+  contacto.
 - **Login que exige cuenta sin necesidad:** ofrece ver contenido o explica el
   valor; si pides registro, que sea coherente.
 - **Privacidad incompleta o URL caída.**
