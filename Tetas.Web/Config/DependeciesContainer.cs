@@ -23,6 +23,7 @@ public static class DependeciesContainer
         //services.AddScoped<IPostComment, PostCommentRepository>();
         services.AddScoped<IPost, PostRepository>();
         services.AddScoped<IGroup, GroupRepository>();
+        services.AddScoped<IModeration, ModerationRepository>();
 
         #endregion
         #region My services

@@ -160,6 +160,20 @@
         }
     }
 
+    window.tetasReport = function (postId) {
+        var reason = window.prompt("Why are you reporting this post? (optional)");
+        if (reason === null) { return; }
+        var tokenEl = document.querySelector('input[name="__RequestVerificationToken"]');
+        var token = tokenEl ? tokenEl.value : "";
+        fetch("/Posts/Report?id=" + postId + "&reason=" + encodeURIComponent(reason), {
+            method: "POST",
+            headers: { "RequestVerificationToken": token }
+        })
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function () { window.alert("Thanks. This post has been reported to the moderators."); })
+            .catch(function () { window.alert("Could not send the report right now."); });
+    };
+
     window.tetasReact = function (btn, postId) {
         var tokenEl = document.querySelector('input[name="__RequestVerificationToken"]');
         var token = tokenEl ? tokenEl.value : "";

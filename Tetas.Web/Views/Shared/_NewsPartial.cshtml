@@ -64,6 +64,12 @@ else
                         <i class="far fa-trash-alt"></i> Delete
                     </a>
                 }
+                else
+                {
+                    <button type="button" class="post-action" onclick="tetasReport(@item.Id)">
+                        <i class="far fa-flag"></i> Report
+                    </button>
+                }
             </div>
 
             @if (item.PostComments != null && item.PostComments.Any())

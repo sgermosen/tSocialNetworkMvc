@@ -44,6 +44,8 @@ namespace Tetas.Infraestructure
             modelBuilder.ApplyConfiguration(new PrivacyConfig());
             modelBuilder.ApplyConfiguration(new ReactionConfig());
             modelBuilder.ApplyConfiguration(new NotificationConfig());
+            modelBuilder.ApplyConfiguration(new UserBlockConfig());
+            modelBuilder.ApplyConfiguration(new ReportConfig());
 
             //  new ApplicationUserConfig(modelBuilder.Entity<ApplicationUser>());
             //new OwnerConfig(modelBuilder.Entity<Owner>());
@@ -74,6 +76,7 @@ namespace Tetas.Infraestructure
             modelBuilder.Entity<GroupType>().HasQueryFilter(x => !x.Deleted);
             modelBuilder.Entity<Privacy>().HasQueryFilter(x => !x.Deleted);
             modelBuilder.Entity<Reaction>().HasQueryFilter(x => !x.Post.Deleted);
+            modelBuilder.Entity<Report>().HasQueryFilter(x => !x.Post.Deleted);
             #endregion
         }
 
@@ -98,6 +101,10 @@ namespace Tetas.Infraestructure
         public DbSet<Reaction> Reactions { get; set; }
 
         public DbSet<Notification> Notifications { get; set; }
+
+        public DbSet<UserBlock> UserBlocks { get; set; }
+
+        public DbSet<Report> Reports { get; set; }
 
     }
 }

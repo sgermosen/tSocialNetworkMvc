@@ -63,6 +63,79 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     }
   }
 
+  Future<void> _reportPost(Post post) async {
+    final controller = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Report post'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Reason (optional)',
+          ),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel')),
+          FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Report')),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    if (!mounted) return;
+    try {
+      await context.read<AuthState>().api.reportPost(post.id, controller.text.trim());
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Thanks. The post was reported.')),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+  }
+
+  Future<void> _blockAuthor(Post post) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Block ${post.authorName}?'),
+        content: const Text(
+            "You won't see their posts and they won't see yours."),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel')),
+          FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Block')),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    if (!mounted) return;
+    try {
+      await context.read<AuthState>().api.blockUser(post.authorEmail);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${post.authorName} was blocked.')),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -102,6 +175,35 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             ],
                           ),
                         ),
+                        if (!post.isMine)
+                          PopupMenuButton<String>(
+                            icon: const Icon(Icons.more_vert),
+                            onSelected: (value) {
+                              if (value == 'report') {
+                                _reportPost(post);
+                              } else if (value == 'block') {
+                                _blockAuthor(post);
+                              }
+                            },
+                            itemBuilder: (context) => const [
+                              PopupMenuItem(
+                                value: 'report',
+                                child: ListTile(
+                                  leading: Icon(Icons.flag_outlined),
+                                  title: Text('Report post'),
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'block',
+                                child: ListTile(
+                                  leading: Icon(Icons.block),
+                                  title: Text('Block author'),
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                     if ((post.name ?? '').isNotEmpty) ...[

@@ -20,6 +20,7 @@ namespace Tetas.Web.Controllers
         private readonly IMailHelper _mailHelper;
         //private readonly ICountryRepository countryRepository;
         private readonly IConfiguration _configuration;
+        private readonly Repositories.Contracts.IModeration _moderation;
 
         //private readonly SignInManager<ApplicationUser> _signInManager;
         //private readonly UserManager<ApplicationUser> userManager;
@@ -30,7 +31,8 @@ namespace Tetas.Web.Controllers
         //UserManager<ApplicationUser> userManager)//, IUserHelper userHelper)
         public AccountController(IUserHelper userHelper,
             IMailHelper mailHelper,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            Repositories.Contracts.IModeration moderation)
         {
             //_signInManager = signInManager;
             //userManager = userManager;
@@ -38,6 +40,7 @@ namespace Tetas.Web.Controllers
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _configuration = configuration;
+            _moderation = moderation;
         }
 
 
@@ -264,6 +267,11 @@ namespace Tetas.Web.Controllers
             {
                 profile.IsMe = true;
             }
+            else
+            {
+                var me = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                ViewBag.IsBlocked = me != null && await _moderation.IsBlockedAsync(me.Id, user.Id);
+            }
 
             return View(profile);
         }
@@ -434,6 +442,34 @@ namespace Tetas.Web.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Block(string email)
+        {
+            var me = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var target = await _userHelper.GetUserByEmailAsync(email);
+            if (me == null || target == null)
+            {
+                return NotFound();
+            }
+
+            await _moderation.BlockAsync(me.Id, target.Id);
+            return RedirectToAction(nameof(Profile), new { id = email });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Unblock(string email)
+        {
+            var me = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            var target = await _userHelper.GetUserByEmailAsync(email);
+            if (me == null || target == null)
+            {
+                return NotFound();
+            }
+
+            await _moderation.UnblockAsync(me.Id, target.Id);
+            return RedirectToAction(nameof(Profile), new { id = email });
         }
 
         [AllowAnonymous]

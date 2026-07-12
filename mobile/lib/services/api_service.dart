@@ -154,6 +154,27 @@ class ApiService {
     }
   }
 
+  Future<void> reportPost(int postId, String reason) async {
+    final response = await http.post(
+      _uri('/api/posts/$postId/report'),
+      headers: _headers(),
+      body: jsonEncode({'reason': reason}),
+    );
+    if (response.statusCode != 204 && response.statusCode != 200) {
+      _fail(response);
+    }
+  }
+
+  Future<void> blockUser(String email) async {
+    final response = await http.post(
+      _uri('/api/users/${Uri.encodeComponent(email)}/block'),
+      headers: _headers(),
+    );
+    if (response.statusCode != 204 && response.statusCode != 200) {
+      _fail(response);
+    }
+  }
+
   Future<List<AppNotification>> getNotifications() async {
     final response =
         await http.get(_uri('/api/notifications'), headers: _headers());

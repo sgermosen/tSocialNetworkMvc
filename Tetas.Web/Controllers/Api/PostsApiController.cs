@@ -25,20 +25,27 @@ namespace Tetas.Web.Controllers.Api
         private readonly IUserHelper _userHelper;
         private readonly IContentSanitizer _sanitizer;
         private readonly INotificationService _notifications;
+        private readonly IModeration _moderation;
 
         public PostsApiController(IPost postRepository, IUserHelper userHelper,
-            IContentSanitizer sanitizer, INotificationService notifications)
+            IContentSanitizer sanitizer, INotificationService notifications,
+            IModeration moderation)
         {
             _postRepository = postRepository;
             _userHelper = userHelper;
             _sanitizer = sanitizer;
             _notifications = notifications;
+            _moderation = moderation;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PostDto>>> Get()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var hidden = await _moderation.GetHiddenUserIdsAsync(userId);
+
             var posts = await _postRepository.GetPostWithComments("")
+                .Where(p => !hidden.Contains(p.Owner.Id))
                 .OrderByDescending(p => p.Date)
                 .Take(30)
                 .ToListAsync();
@@ -152,6 +159,20 @@ namespace Tetas.Web.Controllers.Api
                 Total = summary.Total,
                 MyReaction = summary.MyReaction?.ToString()
             });
+        }
+
+        [HttpPost("{id:long}/report")]
+        public async Task<IActionResult> Report(long id, ReportRequest request)
+        {
+            if (!await _postRepository.ExistAsync(id))
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var reason = _sanitizer.Sanitize(request?.Reason);
+            await _moderation.ReportPostAsync(userId, id, reason);
+            return NoContent();
         }
 
         [HttpDelete("{id:long}")]

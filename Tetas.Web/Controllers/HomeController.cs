@@ -16,13 +16,15 @@ namespace Tetas.Web.Controllers
         private readonly IPost _postRepository;
         private readonly IGroup _groupRepository;
         private readonly IUserHelper userHelper;
+        private readonly IModeration _moderation;
 
-        public HomeController(IPost postRepository,IGroup groupRepository, 
-            IUserHelper userHelper)
+        public HomeController(IPost postRepository,IGroup groupRepository,
+            IUserHelper userHelper, IModeration moderation)
         {
             _postRepository = postRepository;
             _groupRepository = groupRepository;
             this.userHelper = userHelper;
+            _moderation = moderation;
         }
 
         public IActionResult Index(string message)
@@ -48,7 +50,10 @@ namespace Tetas.Web.Controllers
             var user = await userHelper.GetUserByEmailAsync(User.Identity.Name);
             ViewBag.CurrentUserId = user?.Id;
 
+            var hidden = await _moderation.GetHiddenUserIdsAsync(user?.Id);
+
             var model = await _postRepository.GetPostWithComments("")
+                .Where(p => !hidden.Contains(p.Owner.Id))
                 .OrderByDescending(p => p.Date)
                 .Take(10)
                 .ToListAsync();

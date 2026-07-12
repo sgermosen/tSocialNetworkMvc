@@ -26,6 +26,25 @@
                             <a class="btn btn-secondary" asp-action="ChangePassword"><i class="fas fa-key"></i> Change password</a>
                         </div>
                     }
+                    else
+                    {
+                        <div class="row-gap" style="margin-top:1rem;">
+                            @if (ViewBag.IsBlocked == true)
+                            {
+                                <form asp-action="Unblock" method="post">
+                                    <input type="hidden" name="email" value="@Model.Email" />
+                                    <button type="submit" class="btn btn-secondary"><i class="fas fa-user-check"></i> Unblock</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="Block" method="post">
+                                    <input type="hidden" name="email" value="@Model.Email" />
+                                    <button type="submit" class="btn btn-danger"><i class="fas fa-user-slash"></i> Block user</button>
+                                </form>
+                            }
+                        </div>
+                    }
                 </div>
             </div>
 

@@ -126,6 +126,18 @@ namespace Tetas.Web.Models.Api
         public string MyReaction { get; set; }
     }
 
+    public class ReportRequest
+    {
+        public string Reason { get; set; }
+    }
+
+    public class BlockedUserDto
+    {
+        public string Email { get; set; }
+
+        public string FullName { get; set; }
+    }
+
     public class NotificationDto
     {
         public long Id { get; set; }

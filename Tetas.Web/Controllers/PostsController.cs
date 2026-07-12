@@ -17,14 +17,17 @@
         private readonly IUserHelper _userHelper;
         private readonly IContentSanitizer _sanitizer;
         private readonly INotificationService _notifications;
+        private readonly IModeration _moderation;
 
         public PostsController(IPost postRepository, IUserHelper userHelper,
-            IContentSanitizer sanitizer, INotificationService notifications)
+            IContentSanitizer sanitizer, INotificationService notifications,
+            IModeration moderation)
         {
             _postRepository = postRepository;
             _userHelper = userHelper;
             _sanitizer = sanitizer;
             _notifications = notifications;
+            _moderation = moderation;
         }
         //private readonly IHttpContextAccessor _httpContextAccessor;
         //public OtherClass(IHttpContextAccessor httpContextAccessor)
@@ -238,6 +241,24 @@
             }
 
             return Json(new { total = summary.Total, mine = summary.MyReaction?.ToString() });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Report(long id, string reason)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            if (!await _postRepository.ExistAsync(id))
+            {
+                return NotFound();
+            }
+
+            await _moderation.ReportPostAsync(user.Id, id, _sanitizer.Sanitize(reason));
+            return Json(new { reported = true });
         }
 
         #region Posts

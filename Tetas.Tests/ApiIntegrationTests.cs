@@ -86,6 +86,47 @@ public class ApiIntegrationTests : IClassFixture<CustomWebApplicationFactory>
     }
 
     [Fact]
+    public async Task Blocking_a_user_hides_their_posts_from_the_feed()
+    {
+        var authorClient = _factory.CreateClient();
+        var authorEmail = $"author-{Guid.NewGuid():N}@example.com";
+        var authorToken = await RegisterAsync(authorClient, authorEmail);
+        authorClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authorToken);
+        await authorClient.PostAsJsonAsync("/api/posts", new { name = "By author", body = "hi" });
+
+        var viewerClient = _factory.CreateClient();
+        var viewerToken = await RegisterAsync(viewerClient, $"viewer-{Guid.NewGuid():N}@example.com");
+        viewerClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", viewerToken);
+
+        var before = await viewerClient.GetFromJsonAsync<JsonElement>("/api/posts", JsonOptions);
+        Assert.Contains(before.EnumerateArray(), p => p.GetProperty("authorEmail").GetString() == authorEmail);
+
+        var block = await viewerClient.PostAsync($"/api/users/{Uri.EscapeDataString(authorEmail)}/block", null);
+        Assert.Equal(HttpStatusCode.NoContent, block.StatusCode);
+
+        var after = await viewerClient.GetFromJsonAsync<JsonElement>("/api/posts", JsonOptions);
+        Assert.DoesNotContain(after.EnumerateArray(), p => p.GetProperty("authorEmail").GetString() == authorEmail);
+    }
+
+    [Fact]
+    public async Task Reporting_a_post_succeeds()
+    {
+        var authorClient = _factory.CreateClient();
+        var authorToken = await RegisterAsync(authorClient, $"ra-{Guid.NewGuid():N}@example.com");
+        authorClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authorToken);
+        var created = await (await authorClient.PostAsJsonAsync("/api/posts", new { name = "R", body = "b" }))
+            .Content.ReadFromJsonAsync<JsonElement>(JsonOptions);
+        var id = created.GetProperty("id").GetInt64();
+
+        var reporterClient = _factory.CreateClient();
+        var reporterToken = await RegisterAsync(reporterClient, $"rp-{Guid.NewGuid():N}@example.com");
+        reporterClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", reporterToken);
+
+        var report = await reporterClient.PostAsJsonAsync($"/api/posts/{id}/report", new { reason = "spam" });
+        Assert.Equal(HttpStatusCode.NoContent, report.StatusCode);
+    }
+
+    [Fact]
     public async Task Body_is_sanitized_on_create()
     {
         var client = _factory.CreateClient();
