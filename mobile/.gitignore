@@ -18,3 +18,5 @@ android/app/profile/
 android/app/release/
 **/GeneratedPluginRegistrant.*
 .gradle/
+
+screenshots/

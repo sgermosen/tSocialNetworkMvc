@@ -41,6 +41,20 @@ flutter pub get
 flutter run --dart-define=TETAS_API_BASE_URL=http://10.0.2.2:5000
 ```
 
+## Store screenshots
+
+With a device/emulator/simulator running and a demo account that has some
+content, capture the store screenshots automatically:
+
+```bash
+cd mobile
+API=https://api.tudominio.com EMAIL=demo@example.com PASSWORD=Password1 \
+  ./tools/take_screenshots.sh
+```
+
+PNGs are written to `mobile/screenshots/` (login, feed, groups, profile,
+notifications). Frame them for the stores as described in `docs/LAUNCH.md` §7.
+
 ## Project structure
 
 ```
