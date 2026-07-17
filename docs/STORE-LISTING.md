@@ -79,7 +79,7 @@ Recursos gráficos listos en `docs/store-assets/`:
 |-------|-------|
 | Precio | Gratuita |
 | Países / regiones | Los que elijas |
-| Política de privacidad (URL pública) | `https://[tu-dominio]/privacy` (plantilla en `docs/LAUNCH.md` §6) |
+| Política de privacidad (URL pública) | `https://[tu-dominio]/Home/Privacy` (ya la sirve la app; texto en `docs/PRIVACY.md`) |
 | Anuncios | No |
 | Pista de lanzamiento | Interna → Cerrada → Producción |
 
@@ -107,7 +107,7 @@ Recursos gráficos listos en `docs/store-assets/`:
 | Palabras clave (≤100, separadas por comas) | `educación,estudiantes,docentes,red social,grupos,clase,universidad,comunidad,aprendizaje` |
 | URL de soporte | `https://[tu-dominio o repo]` |
 | URL de marketing (opcional) | `https://[tu-dominio]` |
-| URL de política de privacidad | `https://[tu-dominio]/privacy` |
+| URL de política de privacidad | `https://[tu-dominio]/Home/Privacy` |
 | Novedades (What's New) | Ver **§C** |
 | Ícono (1024×1024, sin alfa) | `mobile/assets/icon/icon.png` |
 | Capturas | iPhone 6.9" 1290×2796 (obligatorio); ver `docs/LAUNCH.md` §4.5 |
